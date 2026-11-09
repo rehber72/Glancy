@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DIM Exam Prep App</title>
+    <style>
+        :root {
+            --bg: #090a0f;
+            --surface: #13151f;
+            --surface-hover: #1b1e2c;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-highlight: rgba(147, 51, 234, 0.5);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-tertiary: #64748b;
+            --accent: #9333ea;
+            --accent-pink: #ec4899;
+            --accent-glow: rgba(147, 51, 234, 0.35);
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-amber: #f59e0b;
+            --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .light {
+            --bg: #f1f5f9;
+            --surface: #ffffff;
+            --surface-hover: #f8fafc;
+            --border: rgba(0, 0, 0, 0.08);
+            --border-highlight: rgba(147, 51, 234, 0.4);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-tertiary: #94a3b8;
+            --accent: #7c3aed;
+            --accent-glow: rgba(124, 58, 237, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px 14px;
+            max-width: 820px;
+            margin: 0 auto;
+            transition: background-color 0.4s var(--ease-out), color 0.4s var(--ease-out);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s var(--ease-out) forwards;
+            opacity: 0;
+            transform: translateY(16px);
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Artifact Card UI Header */
+        .artifact-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.4);
+            transition: var(--t-ui);
+        }
+
+        .artifact-card:hover {
+            border-color: var(--border-highlight);
+            box-shadow: 0 30px 60px -20px var(--accent-glow);
+        }
+
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            margin-bottom: 20px;
+            border-radius: 99px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 24px -8px rgba(0,0,0,0.3);
+        }
+
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-pink));
+            color: #fff;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        .btn-icon {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 99px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--t-ui);
+        }
+
+        .btn-icon:hover {
+            border-color: var(--border-highlight);
+            background: var(--surface-hover);
+            transform: translateY(-2px);
+        }
+
+        .lang-pills {
+            display: flex;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 3px;
+            border-radius: 99px;
+            border: 1px solid var(--border);
+        }
+
+        .lang-btn {
+            border: none;
+            background: transparent;
+            color: var(--text-tertiary);
+            padding: 5px 10px;
+            font-size: 10px;
+            font-weight: 800;
+            border-radius: 99px;
+            cursor: pointer;
+            transition: var(--t-ui);
+        }
+
+        .lang-btn.active {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 4px 12px var(--accent-glow);
+            transform: scale(1.05);
+        }
+
+        .hero-banner {
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.18) 0%, rgba(236, 72, 153, 0.12) 100%);
+            border: 1px solid var(--border-highlight);
+            border-radius: 24px;
+            padding: 26px;
+            margin-bottom: 20px;
+            box-shadow: 0 15px 35px -10px var(--accent-glow);
+        }
+
+        .hero-title {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 6px;
+            background: linear-gradient(90deg, var(--text-primary), #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .progress-track {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 99px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-pink));
+            border-radius: 99px;
+            transition: width 0.6s var(--ease-out);
+        }
+
+        .tabs-wrapper {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 18px;
+            scrollbar-width: none;
+        }
+        .tabs-wrapper::-webkit-scrollbar { display: none; }
+
+        .tab-chip {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 10px 16px;
+            border-radius: 14px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--t-ui);
+        }
+
+        .tab-chip:hover {
+            border-color: var(--border-highlight);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .tab-chip.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+            box-shadow: 0 6px 20px var(--accent-glow);
+            transform: scale(1.03);
+        }
+
+        .topic-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 18px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: var(--t-ui);
+        }
+
+        .topic-row:hover {
+            border-color: var(--border-highlight);
+            transform: translateX(4px);
+            background: var(--surface-hover);
+        }
+
+        .topic-row.completed {
+            opacity: 0.55;
+        }
+        .topic-row.completed h4 {
+            text-decoration: line-through;
+        }
+
+        .topic-badge {
+            font-size: 9px;
+            font-weight: 800;
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            padding: 3px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+
+        .quiz-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 14px;
+        }
+
+        .mobbin-opt {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: var(--t-ui);
+        }
+
+        .mobbin-opt:hover {
+            border-color: var(--border-highlight);
+            transform: translateX(4px);
+        }
+
+        .mobbin-opt.correct {
+            background: rgba(16, 185, 129, 0.2) !important;
+            border-color: var(--accent-green) !important;
+            color: var(--accent-green) !important;
+            font-weight: 800;
+        }
+
+        .mobbin-opt.wrong {
+            background: rgba(239, 68, 68, 0.2) !important;
+            border-color: var(--accent-red) !important;
+            color: var(--accent-red) !important;
+            font-weight: 800;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 13px;
+            cursor: pointer;
+            box-shadow: 0 8px 24px var(--accent-glow);
+            transition: var(--t-ui);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px var(--accent-glow);
+        }
+
+        .hidden { display: none !important; }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background: var(--surface);
+            border: 1px solid var(--border-highlight);
+            border-radius: 24px;
+            padding: 26px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.6);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 13px;
+            margin-top: 4px;
+            margin-bottom: 14px;
+            outline: none;
+        }
+
+        .choice-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .choice-btn {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            cursor: pointer;
+            color: var(--text-primary);
+            text-align: left;
+            transition: var(--t-ui);
+        }
+
+        .choice-btn:hover {
+            border-color: var(--accent);
+            background: rgba(147, 51, 234, 0.15);
+            transform: translateY(-3px);
+        }
+
+        /* ===== Motion layer (unseen.co-style) ===== */
+        html{scroll-behavior:smooth}
+        body::after{content:'';position:fixed;inset:-50%;width:200%;height:200%;pointer-events:none;z-index:2000;opacity:.055;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            animation:grain 1s steps(6) infinite}
+        @keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-4%,3%)}40%{transform:translate(3%,-5%)}60%{transform:translate(-6%,-2%)}80%{transform:translate(5%,4%)}100%{transform:translate(0,0)}}
+
+        #pre{position:fixed;inset:0;z-index:5000;background:#090a0f;color:#f8fafc;display:flex;flex-direction:column;justify-content:space-between;padding:28px;
+            transition:transform 1s cubic-bezier(.76,0,.24,1),border-radius 1s cubic-bezier(.76,0,.24,1)}
+        #pre.out{transform:translateY(-100%);border-radius:0 0 50% 50%/0 0 14vh 14vh}
+        #pre .pre-t{font-size:12px;font-weight:800;letter-spacing:.2em;color:#94a3b8}
+        #pre .pre-n{font-size:clamp(90px,30vw,220px);font-weight:900;letter-spacing:-.06em;line-height:.8;
+            background:linear-gradient(90deg,#f8fafc,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        #pre .pre-n small{font-size:.3em;letter-spacing:0;margin-left:6px}
+
+        #curtain{position:fixed;inset:0;z-index:4000;background:var(--accent);transform:translateY(100%);pointer-events:none;border-radius:50% 50% 0 0/14vh 14vh 0 0}
+        #curtain.in{transform:translateY(0);border-radius:0;transition:transform .6s cubic-bezier(.76,0,.24,1),border-radius .6s}
+        #curtain.out{transform:translateY(-100%);border-radius:0 0 50% 50%/0 0 14vh 14vh;transition:transform .7s cubic-bezier(.76,0,.24,1),border-radius .7s}
+
+        #cur{display:none;position:fixed;left:0;top:0;width:12px;height:12px;margin:-6px 0 0 -6px;z-index:6000;pointer-events:none;mix-blend-mode:difference}
+        #cur i{display:block;width:100%;height:100%;border-radius:50%;background:#fff;transition:transform .45s var(--ease-out)}
+        #cur.big i{transform:scale(4.5)}
+        @media (hover:hover) and (pointer:fine){ *{cursor:none!important} #cur{display:block} }
+
+        .btn-icon,.btn-primary,.choice-btn{translate:var(--mx,0px) var(--my,0px)}
+
+        /* reveal */
+        body:not(.ready) .rv{opacity:0}
+        .rv:not(.in){opacity:0;transform:translateY(46px)}
+        .ready :where(.rv.in){animation:rise 1s var(--ease-out) backwards;animation-delay:var(--d,0s)}
+        @keyframes rise{from{opacity:0;transform:translateY(46px)}}
+        .sp .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.14em;margin-bottom:-.14em}
+        .sp .w>span{display:inline-block;transform:translateY(112%)}
+        .ready .sp.in .w>span{transform:none;transition:transform 1.1s var(--ease-out)}
+        .static .rv{animation:none!important}
+        .static .sp .w>span{transition:none!important}
+
+        .hero-title{background:none;-webkit-text-fill-color:initial;font-size:clamp(34px,10vw,64px);line-height:.95;letter-spacing:-.04em;margin-bottom:14px}
+        .hero-title .w>span,.page-title .w>span{background:linear-gradient(90deg,var(--text-primary),#c084fc);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+        .page-title{font-size:clamp(26px,7vw,40px);font-weight:900;letter-spacing:-.035em;line-height:1;margin-bottom:6px}
+        .hero-banner.fade-in,.artifact-card.fade-in{animation:none;opacity:1;transform:none}
+
+        /* marquee */
+        .marquee{overflow:hidden;margin:0 -14px 20px;padding:6px 0;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+        .mq{display:flex;gap:34px;width:max-content;animation:mq 38s linear infinite;font-size:26px;font-weight:900;letter-spacing:-.03em;color:var(--text-tertiary);white-space:nowrap}
+        .mq span:nth-child(even){color:var(--accent)}
+        .marquee:hover .mq{animation-play-state:paused}
+        @keyframes mq{to{transform:translateX(-50%)}}
+
+        /* topic rows: fill sweep */
+        .topic-row{position:relative;overflow:hidden}
+        .topic-row>*{position:relative;z-index:1}
+        .topic-row::before{content:'';position:absolute;inset:0;background:var(--accent);transform:translateY(101%);border-radius:50% 50% 0 0/40% 40% 0 0;transition:transform .55s var(--ease-out),border-radius .55s var(--ease-out);z-index:0}
+        @media (hover:hover){
+            .topic-row:hover::before{transform:translateY(0);border-radius:0}
+            .topic-row:hover h4,.topic-row:hover span:not(.topic-badge){color:#fff!important}
+        }
+        .topic-row .go{display:inline-block;transition:transform .5s var(--ease-out)}
+        @media (hover:hover){.topic-row:hover .go{transform:translateX(6px)}}
+
+        /* quiz */
+        .q-text{font-size:14px;font-weight:800;margin-bottom:14px;line-height:1.45}
+        .mobbin-opt{justify-content:flex-start;gap:12px;position:relative;overflow:hidden}
+        .mobbin-opt .k{flex:none;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:11px;font-weight:800;background:rgba(147,51,234,.14);color:var(--accent)}
+        .mobbin-opt.locked{pointer-events:none}
+        .mobbin-opt.locked:not(.correct):not(.wrong){opacity:.4}
+        .mobbin-opt.correct{animation:pop .6s var(--ease-spring)}
+        .mobbin-opt.wrong{animation:shake .45s}
+        .mobbin-opt.correct .k{background:var(--accent-green);color:#fff}
+        .mobbin-opt.wrong .k{background:var(--accent-red);color:#fff}
+        @keyframes pop{0%{transform:scale(.97)}50%{transform:scale(1.025)}100%{transform:scale(1)}}
+        @keyframes shake{20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+        .exp{display:grid;grid-template-rows:0fr;transition:grid-template-rows .6s var(--ease-out)}
+        .exp.open{grid-template-rows:1fr}
+        .exp>div{overflow:hidden}
+        .exp-in{margin-top:6px;padding:12px 14px;border-radius:12px;background:rgba(147,51,234,.1);border:1px solid var(--border-highlight);font-size:12px;line-height:1.55;color:var(--text-secondary)}
+        .exp-in b{color:var(--accent)}
+        .qbar{position:fixed;left:0;top:0;height:3px;width:100%;z-index:1500;pointer-events:none}
+        .qbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-pink));transition:width .7s var(--ease-out)}
+        .res{display:none;text-align:center;padding:28px 18px}
+        .res.show{display:block;animation:rise .9s var(--ease-out)}
+        .res-n{font-size:72px;font-weight:900;letter-spacing:-.05em;line-height:1;margin:6px 0 16px}
+        .res-n small{font-size:28px;color:var(--text-tertiary)}
+        .formula{display:block;background:var(--surface);padding:12px 14px;border-radius:10px;color:var(--accent-amber);font-size:13px;line-height:1.7;margin-bottom:6px;font-family:ui-monospace,Menlo,Consolas,monospace;user-select:text}
+        .note{font-size:12px;color:var(--text-tertiary);line-height:1.5}
+
+        .modal-overlay{animation:fadeOv .4s var(--ease-out)}
+        .modal-box{animation:modalIn .7s var(--ease-out)}
+        @keyframes fadeOv{from{opacity:0}}
+        @keyframes modalIn{from{opacity:0;transform:translateY(40px) scale(.96)}}
+
+        @media (prefers-reduced-motion:reduce){
+            body::after,.mq{animation:none}
+            .rv:not(.in),.sp .w>span{transform:none;opacity:1}
+            *{transition-duration:.01ms!important;animation-duration:.01ms!important}
+        }
+
+        /* ===== v2: smoothness, perf, fixes ===== */
+        :root{--t-ui:transform .45s var(--ease-out),translate .45s var(--ease-out),background-color .3s,border-color .3s,color .3s,box-shadow .4s,opacity .3s}
+        html{scroll-behavior:auto;-webkit-text-size-adjust:100%}
+        body{min-height:100dvh;transition:none}
+        body.lock{overflow:hidden}
+        body::after{opacity:.045;will-change:transform}
+        .light body::after{opacity:.03}
+        #pre,#curtain,#cur{will-change:transform}
+        #curtain.in{transition:transform .5s cubic-bezier(.76,0,.24,1),border-radius .5s}
+        #curtain.out{transition:transform .6s cubic-bezier(.76,0,.24,1),border-radius .6s}
+        #cur.down i{transform:scale(.55)}
+        #cur.big.down i{transform:scale(3.4)}
+
+        .top-nav{position:sticky;top:10px;z-index:900;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:color-mix(in srgb,var(--surface) 82%,transparent);transition:transform .6s var(--ease-out)}
+        .top-nav.fade-in{opacity:1;transform:none;animation:none}
+        body:not(.ready) .top-nav.fade-in{opacity:0}
+        .ready .top-nav.fade-in{animation:navIn 1s var(--ease-out) backwards}
+        @keyframes navIn{from{opacity:0;transform:translateY(-28px)}}
+        .top-nav.hide{transform:translateY(-170%)}
+
+        .rv.nr{animation:none!important}
+        .sp.nr .w>span{transition:none!important}
+        .marquee{transition:transform .7s var(--ease-out);will-change:transform}
+        .hero-banner{will-change:translate}
+        .btn-icon.active{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 6px 18px var(--accent-glow)}
+        .topic-row.leaving{opacity:0;transform:translateX(30px) scale(.96);transition:opacity .35s,transform .38s var(--ease-out)}
+        .topic-row:active,.mobbin-opt:active,.tab-chip:active,.btn-icon:active,.btn-primary:active,.choice-btn:active{transform:scale(.97)}
+        :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:12px}
+
+        .modal-overlay.closing{animation:fadeOut .3s var(--ease-out) forwards}
+        .modal-overlay.closing .modal-box{animation:modalOut .3s var(--ease-out) forwards}
+        @keyframes fadeOut{to{opacity:0}}
+        @keyframes modalOut{to{opacity:0;transform:translateY(26px) scale(.97)}}
+
+        ::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+        ::view-transition-new(root){z-index:9999}
+        .notrans *,.notrans *::before,.notrans *::after{transition:none!important}
+
+        .light .lang-pills{background:rgba(0,0,0,.05)}
+        .light .quiz-card,.light .choice-btn,.light .form-input{background:rgba(0,0,0,.03)}
+        .light .progress-track{background:rgba(0,0,0,.08)}
+
+        @media (hover:none){
+            body::after{animation:none}
+            .topic-row:hover,.mobbin-opt:hover,.tab-chip:hover,.btn-icon:hover,.choice-btn:hover,.btn-primary:hover{transform:none}
+            .topic-row:hover{background:var(--surface);border-color:var(--border)}
+            .topic-row::before{display:none}
+            .tab-chip.active{transform:none}
+        }
+    </style>
+</head>
+<body>
+    <div id="pre"><div class="pre-t">DİM · EXAM PREP</div><div class="pre-n"><span id="pre-n">0</span><small>%</small></div></div>
+    <div id="curtain"></div>
+    <div id="cur"><i></i></div>
+    <div class="qbar hidden" id="qbar"><i id="qb"></i></div>
+    <div class="top-nav fade-in">
+        <div class="user-pill">
+            <div id="avatar" class="avatar">T</div>
+            <div>
+                <h4 id="u-name" style="font-size: 13px; font-weight: 800;">Tələbə</h4>
+                <p id="u-group" style="font-size: 10px; color: var(--text-tertiary);">Выпускной (9-11 класс)</p>
+            </div>
+        </div>
+        <div style="display: flex; gap: 6px; align-items: center;">
+            <button onclick="openProfile()" class="btn-icon">⚙️ <span id="l-prof">Profil</span></button>
+            <div class="lang-pills">
+                <button onclick="setLang('az')" id="l-az" class="lang-btn">AZ</button>
+                <button onclick="setLang('ru')" id="l-ru" class="lang-btn">RU</button>
+                <button onclick="setLang('en')" id="l-en" class="lang-btn">EN</button>
+            </div>
+            <button onclick="toggleTheme(event)" class="btn-icon" id="th-icon">🌙</button>
+        </div>
+    </div>
+
+    <div id="app"></div>
+
+    <div id="m-profile" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 2px;" id="m-title">Profil</h3>
+            <p style="font-size: 11px; color: var(--text-tertiary); margin-bottom: 16px;" id="m-sub">Tənzimləmələr</p>
+            <form onsubmit="saveProf(event)">
+                <label style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--text-tertiary);" id="l-n">Ad</label>
+                <input type="text" id="i-name" required maxlength="30" class="form-input">
+                <label style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--text-tertiary);" id="l-g">Qrup</label>
+                <select id="i-group" class="form-input" style="background: var(--surface);">
+                    <option value="Выпускной (9-11 класс)">Buraxılış 9-11</option>
+                    <option value="I Qrup">I Qrup</option><option value="II Qrup">II Qrup</option>
+                    <option value="III Qrup">III Qrup</option><option value="IV Qrup">IV Qrup</option>
+                </select>
+                <label style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--text-tertiary);" id="l-s">Fənlər</label>
+                <div id="sub-boxes" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; margin-bottom: 16px; max-height: 150px; overflow-y: auto;"></div>
+                <button type="submit" class="btn-primary" id="b-save">Yadda saxla</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="m-choice" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 2px;" id="c-title">Mövzu</h3>
+            <p style="font-size: 11px; color: var(--text-tertiary); margin-bottom: 12px;" id="l-ch">Fəaliyyət seçin:</p>
+            <div class="choice-grid">
+                <div class="choice-btn" onclick="goTheory()">
+                    <span style="font-size: 22px;">📖</span>
+                    <span style="font-size: 13px; font-weight: 800;" id="l-th">Nəzəriyyə</span>
+                    <span style="font-size: 10px; color: var(--text-tertiary);" id="l-th-d">Düsturlar</span>
+                </div>
+                <div class="choice-btn" onclick="goTest()">
+                    <span style="font-size: 22px;">📝</span>
+                    <span style="font-size: 13px; font-weight: 800;" id="l-ts">Test</span>
+                    <span style="font-size: 10px; color: var(--text-tertiary);" id="l-ts-d">10 Sual</span>
+                </div>
+            </div>
+            <button onclick="closeModal('m-choice')" class="btn-icon" style="width: 100%; margin-top: 14px; justify-content: center;">Bağla</button>
+        </div>
+    </div>
+
+    <script>
+        function sj(k, d) { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch(e) { return d; } }
+        const i18n = {
+            ru: { prof: "Профиль", title: "Карта подготовки DIM", sub: "25 тем по каждому из 10 предметов (250 тем)", all: "Все 25", min: "★ МИНИМУМ", done: "Пройденные", stest: "📝 Предметный тест (20)", ttest: "Мини-Тест (10)", mTitle: "Профиль студента", mSub: "Настройка профиля", lName: "Имя", lGroup: "Группа", lSubs: "Предметы", bSave: "Сохранить", back: "← Назад", lChoice: "Выберите действие:", lTh: "Теория", lThD: "Правила и формулы", lTs: "Тест", lTsD: "10 вопросов", secTh: "1. Теория", secRl: "2. Ключевые аспекты", toQuiz: "К тестам →" },
+            az: { prof: "Profil", title: "DİM Hazırlıq Xəritəsi", sub: "Hər 10 fənn üzrə 25 mövzu (cəmi 250 mövzu)", all: "Bütün 25", min: "★ MİNİMUM", done: "Keçilmiş", stest: "📝 Fənn sınaq imtahanı (20)", ttest: "Mini-Test (10)", mTitle: "Tələbə profili", mSub: "Profil tənzimləmələri", lName: "Ad", lGroup: "Qrup", lSubs: "Fənlər", bSave: "Yadda saxla", back: "← Qayıt", lChoice: "Fəaliyyət seçin:", lTh: "Nəzəriyyə", lThD: "İzah və düsturlar", lTs: "Test", lTsD: "10 sual", secTh: "1. Nəzəri izah", secRl: "2. Əsas aspektlər", toQuiz: "Testlərə keç →" },
+            en: { prof: "Profile", title: "DIM Exam Roadmap", sub: "25 core topics across 10 subjects (250 total)", all: "All 25", min: "★ MINIMUM", done: "Completed", stest: "📝 Full Subject Test (20)", ttest: "Mini-Quiz (10)", mTitle: "Student Profile", mSub: "Profile settings", lName: "Name", lGroup: "Group", lSubs: "Subjects", bSave: "Save", back: "← Back", lChoice: "Choose action:", lTh: "Theory", lThD: "Rules & formulas", lTs: "Test", lTsD: "10 questions", secTh: "1. Theory", secRl: "2. Key aspects", toQuiz: "Proceed to tests →" }
+        };
+
+        const subs = {
+            mat: { icon: "📐", name: { ru: "Математика", az: "Riyaziyyat", en: "Mathematics" } },
+            rus: { icon: "📝", name: { ru: "Русский язык", az: "Rus dili", en: "Russian Language" } },
+            aze: { icon: "🇦🇿", name: { ru: "Азербайджанский язык", az: "Azərbaycan dili", en: "Azerbaijani Language" } },
+            eng: { icon: "🇬🇧", name: { ru: "Английский язык", az: "İngilis dili", en: "English Language" } },
+            lit: { icon: "📖", name: { ru: "Литература", az: "Ədəbiyyat", en: "Literature" } },
+            whi: { icon: "⏳", name: { ru: "Всеобщая история", az: "Ümumi tarix", en: "World History" } },
+            his: { icon: "🏛️", name: { ru: "История Азербайджана", az: "Azərbaycan tarixi", en: "History of Azerbaijan" } },
+            geo: { icon: "🌍", name: { ru: "География", az: "Coğrafiya", en: "Geography" } },
+            phy: { icon: "🧲", name: { ru: "Физика", az: "Fizika", en: "Physics" } },
+            che: { icon: "🧪", name: { ru: "Химия", az: "Kimya", en: "Chemistry" } },
+            fra: { icon: "🇫🇷", name: { ru: "Французский язык", az: "Fransız dili", en: "French Language" } },
+            deu: { icon: "🇩🇪", name: { ru: "Немецкий язык", az: "Alman dili", en: "German Language" } },
+            bio: { icon: "🧬", name: { ru: "Биология", az: "Biologiya", en: "Biology" } },
+            inf: { icon: "💻", name: { ru: "Информатика", az: "İnformatika", en: "Informatics" } },
+            dht: { icon: "🎖️", name: { ru: "Допризывная подготовка", az: "Çağırışaqədərki hazırlıq", en: "Pre-conscription Training" } }
+        };
+
+        const emojis = ["🔢", "📊", "📐", "📈", "🧮", "✨", "🎯", "💡", "⚡", "🔬", "📚", "✏️", "🧩", "🌟", "⚙️", "🔎", "📌", "🏆", "🧠", "🔥", "🎓", "🚀", "🗺️", "🔑", "🏅"];
+        
+        let lang = localStorage.getItem('dim_l') || 'az',
+            dark = localStorage.getItem('dim_t') !== 'light',
+            prof = sj('dim_p', null),
+            prog = sj('dim_prog', {}),
+            activeTab = 'mat', filter = 'all', view = 'roadmap', selId = null;
+
+        const topics = {};
+        Object.keys(subs).forEach(s => {
+            topics[s] = Array.from({length: 25}, (_, i) => ({
+                id: `${s}_${i+1}`,
+                min: [0, 2, 4, 6, 8, 11, 13, 17, 19, 23].includes(i),
+                title: { ru: `${i+1}. ${emojis[i%25]} Тема №${i+1} (${subs[s].name.ru})`, az: `${i+1}. ${emojis[i%25]} ${i+1}-ci mövzu (${subs[s].name.az})`, en: `${i+1}. ${emojis[i%25]} Topic #${i+1} (${subs[s].name.en})` },
+                theory: { ru: `Официальный материал DIM по предмету "${subs[s].name.ru}", тема №${i+1}.`, az: `DİM standartına uyğun "${subs[s].name.az}" fənni üzrə ${i+1}-ci mövzu.`, en: `DIM guide for "${subs[s].name.en}" topic #${i+1}.` },
+                quizzes: Array.from({length: 10}, (_, q) => ({
+                    q: { ru: `${q+1}. Вопрос по теме №${i+1}`, az: `${q+1}. ${i+1}-ci mövzu üzrə sual`, en: `${q+1}. Question for topic #${i+1}` },
+                    opts: [
+                        { text: "Вариант A (Правильный / Düzgün)", correct: true },
+                        { text: "Вариант B", correct: false },
+                        { text: "Вариант C", correct: false },
+                        { text: "Вариант D", correct: false }
+                    ]
+                }))
+            }));
+        });
+
+
+        const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const L3 = {
+            exp:{ru:"Разбор",az:"İzah",en:"Explanation"},
+            res:{ru:"Результат",az:"Nəticə",en:"Result"},
+            again:{ru:"Пройти заново",az:"Yenidən keç",en:"Retry"},
+            prog:{ru:"Общий прогресс",az:"Ümumi tərəqqi",en:"Overall progress"},
+            open:{ru:"Открыть",az:"Açmaq",en:"Open"},
+            na:{ru:"Подробный материал по этой теме ещё не добавлен. Тест ниже — демо.",az:"Bu mövzu üzrə ətraflı material hələ əlavə edilməyib. Aşağıdakı test demodur.",en:"Detailed material for this topic hasn't been added yet. The quiz below is a demo."},
+            demo:{ru:"Демо-вопрос: содержание темы ещё не добавлено.",az:"Demo sual: mövzunun məzmunu hələ əlavə edilməyib.",en:"Demo question: topic content hasn't been added yet."}
+        };
+
+        /* Реальный контент. Формат вопроса: [вопрос, [варианты], индекс верного, разбор] */
+        const REAL = {
+            mat_1: { t:{ru:"Проценты",az:"Faiz",en:"Percentages"},
+                th:{ru:"Процент — это сотая часть числа. Чтобы найти p% от N, умножьте N на p/100. Если величина выросла на p%, умножайте на (1 + p/100), если уменьшилась — на (1 − p/100). Чтобы найти целое по известной части, делите часть на её долю.",
+                    az:"Faiz ədədin yüzdə bir hissəsidir. N-in p%-ni tapmaq üçün N-i p/100-ə vurun. Kəmiyyət p% artıbsa (1 + p/100)-ə, p% azalıbsa (1 − p/100)-ə vurun. Hissəsinə görə bütövü tapmaq üçün hissəni onun payına bölün.",
+                    en:"A percent is one hundredth of a number. To find p% of N, multiply N by p/100. A p% increase multiplies by (1 + p/100); a p% decrease multiplies by (1 − p/100). To recover the whole from a part, divide the part by its share."},
+                rule:"p% · N = N · p/100|+p% → N · (1 + p/100)|−p% → N · (1 − p/100)",
+                qs:[["20% · 350 = ?",["60","70","75","80"],1,"350 · 20/100 = 70"],
+                    ["80 → +25% = ?",["95","100","105","110"],1,"80 · 1,25 = 100"],
+                    ["x → −20% = 64. x = ?",["76,8","80","84","90"],1,"x · 0,8 = 64 → x = 80"],
+                    ["100 → +10% → −10% = ?",["100","99","101","98"],1,"100 · 1,1 = 110; 110 · 0,9 = 99"]] },
+            mat_2: { t:{ru:"Квадратные уравнения",az:"Kvadrat tənliklər",en:"Quadratic equations"},
+                th:{ru:"Квадратное уравнение: ax² + bx + c = 0 (a ≠ 0). Вычислите дискриминант D = b² − 4ac. Если D > 0 — два корня, D = 0 — один корень, D < 0 — действительных корней нет. Корни связаны теоремой Виета: сумма равна −b/a, произведение — c/a.",
+                    az:"Kvadrat tənlik: ax² + bx + c = 0 (a ≠ 0). D = b² − 4ac diskriminantını hesablayın. D > 0 olduqda iki kök, D = 0 olduqda bir kök var, D < 0 olduqda həqiqi kök yoxdur. Köklər Viyet teoremi ilə bağlıdır: cəm −b/a, hasil c/a-dır.",
+                    en:"A quadratic equation is ax² + bx + c = 0 (a ≠ 0). Compute the discriminant D = b² − 4ac. If D > 0 there are two roots, if D = 0 one root, if D < 0 no real roots. Vieta's theorem links the roots: their sum is −b/a and their product is c/a."},
+                rule:"D = b² − 4ac|x = (−b ± √D) / 2a|x₁ + x₂ = −b/a,  x₁ · x₂ = c/a",
+                qs:[["x² − 5x + 6 = 0",["2; 3","−2; −3","1; 6","−1; −6"],0,"D = 25 − 24 = 1; x = (5 ± 1)/2 → 3; 2"],
+                    ["D = ?  (2x² + 3x − 2 = 0)",["25","1","−7","17"],0,"D = 9 − 4 · 2 · (−2) = 9 + 16 = 25"],
+                    ["x₁ + x₂ = ?  (x² − 7x + 10 = 0)",["7","−7","10","3"],0,"Виета / Viyet / Vieta: −b/a = 7"],
+                    ["x² − 9 = 0",["3","±3","9","±9"],1,"x² = 9 → x = ±3"]] },
+            mat_3: { t:{ru:"Арифметическая прогрессия",az:"Arifmetik silsilə",en:"Arithmetic progression"},
+                th:{ru:"Арифметическая прогрессия — последовательность, где каждый следующий член получается прибавлением одного и того же числа d (разности). n-й член: aₙ = a₁ + (n − 1)d. Сумма первых n членов: Sₙ = (a₁ + aₙ)·n / 2.",
+                    az:"Arifmetik silsilə — hər növbəti həddin əvvəlkinə eyni d ədədi (fərq) əlavə etməklə alındığı ardıcıllıqdır. n-ci hədd: aₙ = a₁ + (n − 1)d. İlk n həddin cəmi: Sₙ = (a₁ + aₙ)·n / 2.",
+                    en:"An arithmetic progression is a sequence where each term is obtained by adding the same number d (the common difference). The n-th term is aₙ = a₁ + (n − 1)d. The sum of the first n terms is Sₙ = (a₁ + aₙ)·n / 2."},
+                rule:"aₙ = a₁ + (n − 1)d|Sₙ = (a₁ + aₙ) · n / 2|Sₙ = (2a₁ + (n − 1)d) · n / 2",
+                qs:[["a₁ = 3, d = 4. a₅ = ?",["19","17","23","15"],0,"3 + 4 · 4 = 19"],
+                    ["a₁ = 2, d = 3. S₁₀ = ?",["145","155","165","300"],1,"a₁₀ = 2 + 27 = 29; S₁₀ = (2 + 29) · 10 / 2 = 155"],
+                    ["a₃ = 7, a₇ = 19. d = ?",["2","3","4","5"],1,"d = (19 − 7) / (7 − 3) = 3"],
+                    ["2; 5; 8; …  aₙ = 53. n = ?",["16","17","18","19"],2,"2 + 3(n − 1) = 53 → n − 1 = 17 → n = 18"]] }
+        };
+
+        /* Названия 25 тем по каждому предмету: ru|az|en, разделитель тем — «;» */
+        const TT = {
+            mat: ";;;Линейные уравнения|Xətti tənliklər|Linear equations;Системы уравнений|Tənliklər sistemi|Systems of equations;Неравенства|Bərabərsizliklər|Inequalities;Модуль|Modul|Absolute value;Степени и корни|Qüvvət və köklər|Powers and roots;Логарифмы|Loqarifmlər|Logarithms;Показательные уравнения|Üstlü tənliklər|Exponential equations;Функции и графики|Funksiya və qrafiklər|Functions and graphs;Геометрическая прогрессия|Həndəsi silsilə|Geometric progression;Основы тригонометрии|Triqonometriya əsasları|Trigonometry basics;Тригонометрические уравнения|Triqonometrik tənliklər|Trigonometric equations;Производная|Törəmə|Derivative;Интеграл|İnteqral|Integral;Треугольники|Üçbucaqlar|Triangles;Четырёхугольники|Dördbucaqlılar|Quadrilaterals;Окружность и круг|Çevrə və dairə|Circle;Площади фигур|Fiqurların sahələri|Areas of figures;Векторы|Vektorlar|Vectors;Прямая на плоскости|Müstəvidə düz xətt|Lines on a plane;Стереометрия|Stereometriya|Solid geometry;Комбинаторика|Kombinatorika|Combinatorics;Вероятность и статистика|Ehtimal və statistika|Probability and statistics",
+            rus: "Фонетика и орфоэпия|Fonetika və orfoepiya|Phonetics;Гласные в корне слова|Kökdə saitlər|Vowels in roots;Правописание согласных|Samitlərin yazılışı|Consonant spelling;Правописание приставок|Prefikslərin yazılışı|Prefix spelling;Правописание суффиксов|Suffikslərin yazılışı|Suffix spelling;Н и НН|Н və НН hərfləri|N and NN;НЕ и НИ|НЕ və НИ hissəcikləri|NE and NI;Слитное, дефисное, раздельное написание|Birgə, defislə və ayrı yazılış|Joint, hyphenated, separate spelling;Лексика и фразеологизмы|Leksika və frazeologiya|Lexicon and phraseology;Словообразование|Söztörətmə|Word formation;Имя существительное|İsim|Noun;Имя прилагательное|Sifət|Adjective;Имя числительное|Say|Numeral;Местоимение|Əvəzlik|Pronoun;Глагол|Fel|Verb;Причастие|Feli sifət|Participle;Деепричастие|Feli bağlama|Verbal adverb;Наречие|Zərf|Adverb;Предлоги и союзы|Qoşma və bağlayıcılar|Prepositions and conjunctions;Словосочетание|Söz birləşməsi|Phrase;Простое предложение|Sadə cümlə|Simple sentence;Знаки препинания при однородных членах|Eynicinsli üzvlərdə durğu işarələri|Punctuation with homogeneous parts;Сложное предложение|Mürəkkəb cümlə|Complex sentence;Прямая речь и цитаты|Düz nitq və sitat|Direct speech and quotes;Текст и стили речи|Mətn və nitq üslubları|Text and speech styles",
+            aze: "Фонетика|Fonetika|Phonetics;Орфография и орфоэпия|Orfoqrafiya və orfoepiya|Orthography and orthoepy;Лексика|Leksika|Lexicon;Синонимы и антонимы|Sinonim və antonimlər|Synonyms and antonyms;Фразеология|Frazeologiya|Phraseology;Морфемика|Morfemika|Morphemics;Словообразование|Söztörətmə|Word formation;Имя существительное|İsim|Noun;Имя прилагательное|Sifət|Adjective;Имя числительное|Say|Numeral;Местоимение|Əvəzlik|Pronoun;Глагол|Fel|Verb;Наклонения глагола|Felin şəkilləri|Verb moods;Причастие и деепричастие|Feli sifət və feli bağlama|Participles;Наречие|Zərf|Adverb;Служебные части речи|Köməkçi nitq hissələri|Function words;Словосочетание|Söz birləşməsi|Phrase;Члены предложения|Cümlə üzvləri|Parts of the sentence;Однородные члены|Eynicinsli üzvlər|Homogeneous parts;Обращение и вводные слова|Müraciət və ara sözlər|Address and parenthetical words;Сложносочинённое предложение|Tabesiz mürəkkəb cümlə|Compound sentence;Сложноподчинённое предложение|Tabeli mürəkkəb cümlə|Complex sentence;Прямая и косвенная речь|Düzgün və dolayı nitq|Direct and indirect speech;Знаки препинания|Durğu işarələri|Punctuation;Текст и стили|Mətn və üslublar|Text and styles",
+            eng: "Present tenses|Present zamanlar|Present tenses;Past tenses|Past zamanlar|Past tenses;Future tenses|Future zamanlar|Future tenses;Perfect и Perfect Continuous|Perfect zamanlar|Perfect tenses;Артикли|Artikllər|Articles;Существительные и число|İsim və kəmiyyət|Nouns and plurals;Местоимения|Əvəzliklər|Pronouns;Прилагательные и степени сравнения|Sifət və müqayisə dərəcələri|Adjectives and comparison;Наречия|Zərflər|Adverbs;Предлоги|Önlüklər|Prepositions;Модальные глаголы|Modal fellər|Modal verbs;Пассивный залог|Məchul növ|Passive voice;Условные предложения|Şərt cümlələri|Conditionals;Косвенная речь|Dolayı nitq|Reported speech;Герундий и инфинитив|Gerund və infinitiv|Gerund and infinitive;Причастия|Feli sifətlər|Participles;Придаточные определительные|Təyin budaq cümlələri|Relative clauses;Порядок слов|Söz sırası|Word order;Фразовые глаголы|Phrasal verblər|Phrasal verbs;Словообразование|Söz yaradıcılığı|Word formation;Идиомы|İdiomlar|Idioms;Чтение: основная мысль|Oxu: əsas fikir|Reading: main idea;Лексика повседневных тем|Gündəlik mövzular|Everyday vocabulary;Письмо и эссе|Məktub və esse|Letters and essays;Связующие слова|Bağlayıcı sözlər|Linking words",
+            lit: "Устное народное творчество|Şifahi xalq ədəbiyyatı|Oral folk literature;«Китаби Деде Горгуд»|«Kitabi-Dədə Qorqud»|Book of Dede Korkut;Низами Гянджеви|Nizami Gəncəvi|Nizami Ganjavi;Имадеддин Насими|İmadəddin Nəsimi|Imadaddin Nasimi;Мухаммед Физули|Məhəmməd Füzuli|Muhammad Fuzuli;Ашугское творчество|Aşıq yaradıcılığı|Ashug art;Молла Панах Вагиф|Molla Pənah Vaqif|Molla Panah Vagif;Мирза Фатали Ахундов|Mirzə Fətəli Axundzadə|Mirza Fatali Akhundov;Сеид Азим Ширвани|Seyid Əzim Şirvani|Seyid Azim Shirvani;Мирза Алекпер Сабир|Mirzə Ələkbər Sabir|Mirza Alakbar Sabir;Джалил Мамедкулизаде|Cəlil Məmmədquluzadə|Jalil Mammadguluzadeh;Гусейн Джавид|Hüseyn Cavid|Huseyn Javid;Джафар Джаббарлы|Cəfər Cabbarlı|Jafar Jabbarly;Самед Вургун|Səməd Vurğun|Samad Vurgun;Расул Рза|Rəsul Rza|Rasul Rza;Мирза Ибрагимов|Mirzə İbrahimov|Mirza Ibrahimov;Бахтияр Вахабзаде|Bəxtiyar Vahabzadə|Bakhtiyar Vahabzadeh;Современная проза|Müasir nəsr|Modern prose;Роды и жанры литературы|Ədəbi növ və janrlar|Literary genres;Стихосложение|Şeir quruluşu|Versification;Изобразительные средства|Bədii təsvir vasitələri|Figures of speech;Образ и характер|Obraz və xarakter|Image and character;Сюжет и композиция|Süjet və kompozisiya|Plot and composition;Литературные направления|Ədəbi cərəyanlar|Literary movements;Мировая классика|Dünya ədəbiyyatı klassikləri|World classics",
+            whi: "Первобытное общество|İbtidai icma|Prehistory;Древний Египет|Qədim Misir|Ancient Egypt;Месопотамия|Mesopotamiya|Mesopotamia;Древние Индия и Китай|Qədim Hindistan və Çin|Ancient India and China;Древняя Греция|Qədim Yunanıstan|Ancient Greece;Древний Рим|Qədim Roma|Ancient Rome;Византия|Bizans|Byzantium;Раннее Средневековье|İlk orta əsrlər|Early Middle Ages;Арабский халифат|Ərəb xilafəti|Arab Caliphate;Феодализм в Европе|Avropada feodalizm|Feudalism in Europe;Крестовые походы|Səlib yürüşləri|Crusades;Монгольская империя|Monqol imperiyası|Mongol Empire;Возрождение и Реформация|İntibah və İslahat|Renaissance and Reformation;Великие географические открытия|Böyük coğrafi kəşflər|Age of Discovery;Английская революция|İngiltərə inqilabı|English Revolution;Эпоха Просвещения|Maarifçilik dövrü|Enlightenment;Американская революция|Amerika inqilabı|American Revolution;Великая французская революция|Böyük Fransa inqilabı|French Revolution;Промышленная революция|Sənaye inqilabı|Industrial Revolution;Наполеоновские войны|Napoleon müharibələri|Napoleonic Wars;Первая мировая война|I Dünya müharibəsi|World War I;Межвоенный период|Müharibələrarası dövr|Interwar period;Вторая мировая война|II Dünya müharibəsi|World War II;Холодная война|Soyuq müharibə|Cold War;Современный мир|Müasir dünya|The modern world",
+            his: "Древнейшие поселения Азербайджана|Azərbaycanın ən qədim məskunlaşması|Earliest settlements;Манна, Мидия, Атропатена|Manna, Midiya, Atropatena|Mannae, Media, Atropatene;Кавказская Албания|Qafqaz Albaniyası|Caucasian Albania;Арабское завоевание|Ərəb işğalı|Arab conquest;Бабек и хуррамиты|Babək və xürrəmilər|Babak and the Khurramites;Ширваншахи|Şirvanşahlar|Shirvanshahs;Государство Эльдегизидов|Eldənizlər dövləti|Eldiguzids;Монгольское нашествие|Monqol istilası|Mongol invasion;Государство Хулагуидов|Elxanilər dövləti|Ilkhanate;Гарагоюнлу и Аккоюнлу|Qaraqoyunlu və Ağqoyunlu|Qara Qoyunlu and Aq Qoyunlu;Государство Сефевидов|Səfəvilər dövləti|Safavids;Надир-шах|Nadir şah|Nadir Shah;Азербайджанские ханства|Azərbaycan xanlıqları|Khanates;Русско-иранские войны|Rusiya-İran müharibələri|Russo-Persian wars;Колониальная политика России|Rusiyanın müstəmləkə siyasəti|Russian colonial policy;Нефтяной бум|Neft bumu|Oil boom;Национальное пробуждение|Milli oyanış|National awakening;Революция 1905–1907|1905–1907-ci illər inqilabı|Revolution of 1905–1907;Азербайджанская Демократическая Республика|Azərbaycan Xalq Cümhuriyyəti|Democratic Republic;Советизация|Sovetləşmə|Sovietization;Азербайджан во Второй мировой войне|II Dünya müharibəsində Azərbaycan|Azerbaijan in WWII;Послевоенный период|Müharibədən sonrakı dövr|Postwar period;Движение за независимость|Müstəqillik hərəkatı|Independence movement;Карабах и Победа|Qarabağ və Zəfər|Karabakh and Victory;Современный Азербайджан|Müasir Azərbaycan|Modern Azerbaijan",
+            geo: "Земля во Вселенной|Yer Kainatda|Earth in the universe;Карта и масштаб|Xəritə və miqyas|Maps and scale;Географические координаты|Coğrafi koordinatlar|Coordinates;Литосфера|Litosfer|Lithosphere;Рельеф|Relyef|Relief;Атмосфера|Atmosfer|Atmosphere;Климатические пояса|İqlim qurşaqları|Climate zones;Гидросфера|Hidrosfer|Hydrosphere;Мировой океан|Dünya okeanı|World Ocean;Реки и озёра|Çaylar və göllər|Rivers and lakes;Почвы|Torpaqlar|Soils;Биосфера и природные зоны|Biosfer və təbiət zonaları|Biosphere and natural zones;Материки|Materiklər|Continents;Население мира|Dünya əhalisi|World population;Урбанизация|Urbanizasiya|Urbanization;Мировое хозяйство|Dünya təsərrüfatı|World economy;Промышленность|Sənaye|Industry;Сельское хозяйство|Kənd təsərrüfatı|Agriculture;Транспорт|Nəqliyyat|Transport;Рельеф Азербайджана|Azərbaycanın relyefi|Relief of Azerbaijan;Климат Азербайджана|Azərbaycanın iqlimi|Climate of Azerbaijan;Воды Азербайджана|Azərbaycanın suları|Waters of Azerbaijan;Природные ресурсы|Təbii sərvətlər|Natural resources;Население Азербайджана|Azərbaycanın əhalisi|Population of Azerbaijan;Экономические районы|İqtisadi rayonlar|Economic regions",
+            phy: "Механическое движение|Mexaniki hərəkət|Mechanical motion;Равномерное и равноускоренное движение|Bərabərsürətli və bərabərdəyişən hərəkət|Uniform and accelerated motion;Свободное падение|Sərbəst düşmə|Free fall;Законы Ньютона|Nyuton qanunları|Newton's laws;Силы в природе|Təbiətdə qüvvələr|Forces in nature;Импульс|İmpuls|Momentum;Работа и энергия|İş və enerji|Work and energy;Колебания и волны|Rəqslər və dalğalar|Oscillations and waves;Статика и гидростатика|Statika və hidrostatika|Statics and hydrostatics;Молекулярно-кинетическая теория|Molekulyar-kinetik nəzəriyyə|Kinetic theory;Газовые законы|Qaz qanunları|Gas laws;Термодинамика|Termodinamika|Thermodynamics;Электростатика|Elektrostatika|Electrostatics;Постоянный ток|Sabit cərəyan|Direct current;Закон Ома|Om qanunu|Ohm's law;Магнитное поле|Maqnit sahəsi|Magnetic field;Электромагнитная индукция|Elektromaqnit induksiya|Electromagnetic induction;Переменный ток|Dəyişən cərəyan|Alternating current;Геометрическая оптика|Həndəsi optika|Geometric optics;Волновая оптика|Dalğa optikası|Wave optics;Основы теории относительности|Nisbilik nəzəriyyəsi əsasları|Relativity basics;Квантовая физика|Kvant fizikası|Quantum physics;Строение атома|Atomun quruluşu|Atomic structure;Радиоактивность|Radioaktivlik|Radioactivity;Ядерные реакции|Nüvə reaksiyaları|Nuclear reactions",
+            che: "Атомы и молекулы|Atom və molekullar|Atoms and molecules;Периодический закон|Dövri qanun|Periodic law;Строение атома|Atomun quruluşu|Atomic structure;Химическая связь|Kimyəvi rabitə|Chemical bonding;Валентность и степень окисления|Valentlik və oksidləşmə dərəcəsi|Valence and oxidation states;Классы неорганических веществ|Qeyri-üzvi maddə sinifləri|Inorganic classes;Оксиды|Oksidlər|Oxides;Кислоты|Turşular|Acids;Основания|Əsaslar|Bases;Соли|Duzlar|Salts;Растворы|Məhlullar|Solutions;Электролитическая диссоциация|Elektrolitik dissosiasiya|Electrolytic dissociation;Реакции ионного обмена|İon mübadilə reaksiyaları|Ion exchange reactions;Окислительно-восстановительные реакции|Oksidləşmə-reduksiya reaksiyaları|Redox reactions;Скорость реакции|Reaksiya sürəti|Reaction rate;Химическое равновесие|Kimyəvi tarazlıq|Chemical equilibrium;Металлы|Metallar|Metals;Неметаллы|Qeyri-metallar|Nonmetals;Электролиз|Elektroliz|Electrolysis;Углеводороды|Karbohidrogenlər|Hydrocarbons;Спирты и фенолы|Spirtlər və fenollar|Alcohols and phenols;Альдегиды и карбоновые кислоты|Aldehidlər və karbon turşuları|Aldehydes and carboxylic acids;Эфиры и жиры|Efirlər və yağlar|Esters and fats;Углеводы и белки|Karbohidratlar və zülallar|Carbohydrates and proteins;Расчёты по уравнениям реакций|Kimyəvi hesablamalar|Reaction calculations"
+        };
+        Object.keys(TT).forEach(s => TT[s].split(';').forEach((str, i) => {
+            if(!str) return; const p = str.split('|');
+            topics[s][i].title = { ru: `${i+1}. ${emojis[i]} ${p[0]}`, az: `${i+1}. ${emojis[i]} ${p[1]}`, en: `${i+1}. ${emojis[i]} ${p[2]}` };
+        }));
+
+        /* Подробная теория (пока ru). Формат: текст##формула~формула. Математика: темы 4–25 */
+        const THX = { mat: [
+"Линейное уравнение: ax + b = 0. Если a ≠ 0, корень единственный: x = −b/a. Если a = 0 и b = 0, решений бесконечно много (подходит любое x); если a = 0 и b ≠ 0 — решений нет. Алгоритм: раскройте скобки, перенесите слагаемые с x влево, числа вправо (со сменой знака), разделите на коэффициент при x. Уравнения с дробями умножайте на общий знаменатель и проверяйте, что он не обращается в 0.##ax + b = 0 → x = −b/a~a = 0, b = 0 → x — любое число~a = 0, b ≠ 0 → корней нет",
+"Система — несколько уравнений с общими неизвестными. Подстановка: выразите одну переменную и подставьте во второе уравнение. Сложение: умножьте уравнения так, чтобы коэффициенты при одной переменной стали противоположными, и сложите. Для a₁x + b₁y = c₁ и a₂x + b₂y = c₂: если a₁/a₂ ≠ b₁/b₂ — одно решение; если a₁/a₂ = b₁/b₂ = c₁/c₂ — бесконечно много; если a₁/a₂ = b₁/b₂ ≠ c₁/c₂ — решений нет.##D = a₁b₂ − a₂b₁~x = (c₁b₂ − c₂b₁)/D~y = (a₁c₂ − a₂c₁)/D",
+"При умножении или делении неравенства на отрицательное число знак меняется на противоположный. Квадратное неравенство решают методом интервалов: найдите корни, отметьте их на оси и определите знаки на промежутках. При a > 0 парабола ветвями вверх: ax² + bx + c < 0 между корнями и > 0 вне корней. Дробно-рациональное неравенство приведите к виду f/g ∨ 0, найдите нули числителя и знаменателя; нули знаменателя всегда выколоты.##a > b, c < 0 ⇒ ac < bc~a > 0, D > 0: ax² + bx + c < 0 ⇔ x₁ < x < x₂~f(x)/g(x) ≥ 0, g(x) ≠ 0",
+"Модуль числа — расстояние от нуля на числовой оси, он всегда неотрицателен. Уравнение |f| = a при a > 0 даёт f = a или f = −a, при a < 0 корней нет. Неравенство |f| < a равносильно −a < f < a, а |f| > a — совокупности f < −a или f > a. Если модулей несколько, разбейте ось на промежутки по нулям подмодульных выражений и раскройте модули на каждом промежутке.##|a| = a при a ≥ 0; |a| = −a при a < 0~√(a²) = |a|; |ab| = |a|·|b|~|a + b| ≤ |a| + |b|",
+"Свойства степеней: aᵐ·aⁿ = aᵐ⁺ⁿ, aᵐ/aⁿ = aᵐ⁻ⁿ, (aᵐ)ⁿ = aᵐⁿ, (ab)ⁿ = aⁿbⁿ. a⁰ = 1 при a ≠ 0, a⁻ⁿ = 1/aⁿ. Корень n-й степени равен a^(1/n); при чётном n подкоренное выражение неотрицательно и значение арифметического корня тоже неотрицательно. Чтобы убрать иррациональность из знаменателя, умножьте числитель и знаменатель на сопряжённое выражение.##aᵐ · aⁿ = aᵐ⁺ⁿ~(aᵐ)ⁿ = aᵐⁿ~ⁿ√(aᵐ) = a^(m/n)~1/(√a − √b) = (√a + √b)/(a − b)",
+"Логарифм logₐb — показатель степени, в которую нужно возвести a, чтобы получить b (a > 0, a ≠ 1, b > 0). Логарифм произведения равен сумме логарифмов, частного — разности, степени — произведению показателя на логарифм. lg — десятичный логарифм, ln — натуральный (основание e). Логарифмические уравнения обязательно проверяйте по ОДЗ: аргумент должен быть положительным.##a^(logₐb) = b~logₐ(xy) = logₐx + logₐy~logₐ(x/y) = logₐx − logₐy~logₐxᵖ = p·logₐx~logₐb = log_c b / log_c a~logₐ1 = 0, logₐa = 1",
+"В показательном уравнении переменная стоит в показателе. Если aᶠ = aᵍ (a > 0, a ≠ 1), то f = g. Приводите обе части к одному основанию; иначе выносите общий множитель или делайте замену t = aˣ (t > 0) и решайте квадратное уравнение. Функция y = aˣ при a > 1 возрастает, при 0 < a < 1 убывает, поэтому в неравенстве знак сохраняется при a > 1 и меняется при 0 < a < 1.##aᶠ = aᵍ ⇔ f = g~aˣ > 0 при любом x~a > 1: aᶠ > aᵍ ⇔ f > g",
+"Функция сопоставляет каждому x из области определения ровно одно y. Область определения: знаменатель ≠ 0, подкоренное выражение чётного корня ≥ 0, аргумент логарифма > 0. Чётная функция симметрична относительно оси Oy, нечётная — относительно начала координат. Преобразования: y = f(x) + c — сдвиг вверх на c, y = f(x − c) — вправо на c, y = −f(x) — отражение относительно Ox. Линейная y = kx + b: k — наклон, b — пересечение с Oy. Вершина параболы лежит при x₀ = −b/(2a).##y = kx + b~x₀ = −b/(2a)~f(−x) = f(x) — чётная~f(−x) = −f(x) — нечётная",
+"Геометрическая прогрессия — последовательность, где каждый член равен предыдущему, умноженному на знаменатель q (b₁ ≠ 0, q ≠ 0). Каждый член, кроме первого, — среднее геометрическое соседних. При |q| < 1 существует сумма бесконечно убывающей прогрессии. Если q > 0, все члены одного знака; если q < 0, знаки чередуются.##bₙ = b₁·qⁿ⁻¹~Sₙ = b₁(qⁿ − 1)/(q − 1), q ≠ 1~S = b₁/(1 − q), |q| < 1~bₙ² = bₙ₋₁ · bₙ₊₁",
+"Синус и косинус угла — ордината и абсцисса точки единичной окружности. Знаки по четвертям: sin > 0 в I и II, cos > 0 в I и IV, tg > 0 в I и III. Значения для 30°, 45°, 60°: sin = 1/2, √2/2, √3/2; cos — в обратном порядке. Формулы приведения: определите знак исходной функции в нужной четверти; при π/2 и 3π/2 название меняется на кофункцию, при π и 2π — нет. Радианная мера: 180° = π.##sin²α + cos²α = 1~tg α = sin α / cos α~sin 2α = 2 sin α cos α~cos 2α = cos²α − sin²α~sin(α ± β) = sin α cos β ± cos α sin β",
+"Простейшие уравнения: sin x = a (|a| ≤ 1), cos x = a, tg x = a; n ∈ ℤ. Частные случаи: sin x = 0 → x = πn; cos x = 0 → x = π/2 + πn; sin x = 1 → x = π/2 + 2πn. Сложные уравнения сводят к простейшим разложением на множители, заменой t = sin x или t = cos x. Однородное a sin x + b cos x = 0 делят на cos x и получают tg x = −b/a. Не забывайте отбирать корни на заданном промежутке.##sin x = a → x = (−1)ⁿ arcsin a + πn~cos x = a → x = ± arccos a + 2πn~tg x = a → x = arctg a + πn",
+"Производная — предел отношения приращения функции к приращению аргумента; геометрически — тангенс угла наклона касательной. Уравнение касательной в точке x₀: y = f(x₀) + f′(x₀)(x − x₀). Функция возрастает там, где f′ > 0, и убывает, где f′ < 0. Экстремум — точка, где f′ меняет знак. Наибольшее и наименьшее значения на отрезке ищут среди значений в критических точках и на концах отрезка.##(xⁿ)′ = n·xⁿ⁻¹~(uv)′ = u′v + uv′~(u/v)′ = (u′v − uv′)/v²~(sin x)′ = cos x; (cos x)′ = −sin x~(eˣ)′ = eˣ; (ln x)′ = 1/x",
+"Первообразная F функции f — такая функция, что F′ = f. Неопределённый интеграл — это F(x) + C. Определённый интеграл вычисляют по формуле Ньютона–Лейбница; при f ≥ 0 он равен площади криволинейной трапеции под графиком на [a; b]. Площадь фигуры между кривыми — интеграл от разности верхней и нижней функций.##∫xⁿ dx = xⁿ⁺¹/(n + 1) + C~∫eˣ dx = eˣ + C~∫ sin x dx = −cos x + C~∫ₐᵇ f dx = F(b) − F(a)~S = ∫ₐᵇ (f − g) dx",
+"Сумма углов треугольника 180°; каждая сторона меньше суммы двух других. Признаки равенства: по двум сторонам и углу между ними, по стороне и двум прилежащим углам, по трём сторонам. В прямоугольном треугольнике a² + b² = c². Медианы пересекаются в одной точке и делятся 2 : 1, считая от вершины; биссектриса делит противоположную сторону пропорционально прилежащим сторонам. Произвольный треугольник решают теоремами синусов и косинусов.##a/sin A = b/sin B = c/sin C = 2R~c² = a² + b² − 2ab·cos C~S = ½·ab·sin C~S = abc/(4R) = p·r",
+"Параллелограмм: противоположные стороны и углы равны, диагонали делятся пополам. Ромб — параллелограмм с равными сторонами: диагонали перпендикулярны и делят углы пополам. У прямоугольника диагонали равны, квадрат объединяет свойства ромба и прямоугольника. Средняя линия трапеции параллельна основаниям и равна их полусумме. В описанном четырёхугольнике суммы противоположных сторон равны, во вписанном суммы противоположных углов равны 180°.##S = a·h (параллелограмм)~S = (a + b)/2 · h (трапеция)~S = d₁d₂/2 (ромб)~m = (a + b)/2",
+"Центральный угол равен дуге, на которую опирается; вписанный угол вдвое меньше центрального на ту же дугу. Вписанные углы на одну дугу равны, а опирающийся на диаметр — прямой. Касательная перпендикулярна радиусу в точке касания; отрезки касательных из одной точки равны. Для пересекающихся хорд AM·MB = CM·MD. Длина окружности и площадь круга выражаются через радиус.##C = 2πR~S = πR²~l = πRα/180°~S сектора = πR²α/360°",
+"Площадь прямоугольника — ab, параллелограмма — основание на высоту, треугольника — половина основания на высоту. Формула Герона даёт площадь по трём сторонам (p — полупериметр). Площади подобных фигур относятся как квадрат коэффициента подобия k, периметры — как k. Для многоугольника, описанного около окружности, S = p·r.##S = ½·a·h~S = √(p(p − a)(p − b)(p − c))~S₁/S₂ = k²~S = ½·d₁d₂·sin φ~S = p·r",
+"Вектор задан длиной и направлением. Координаты вектора AB = (x₂ − x₁; y₂ − y₁). Сложение и умножение на число выполняются покоординатно. Скалярное произведение равно нулю тогда и только тогда, когда векторы перпендикулярны. Коллинеарные векторы пропорциональны: x₁/x₂ = y₁/y₂.##|a| = √(x² + y²)~a·b = x₁x₂ + y₁y₂~cos φ = a·b / (|a|·|b|)~a ⊥ b ⇔ a·b = 0",
+"Уравнение прямой: y = kx + b, где k = tg α. Параллельные прямые имеют равные k, перпендикулярные — k₁·k₂ = −1. Прямая через две точки задаётся пропорцией координат. Середина отрезка — полусумма координат концов. Уравнение окружности с центром (a; b) и радиусом R — каноническое.##y = kx + b~(x − x₁)/(x₂ − x₁) = (y − y₁)/(y₂ − y₁)~d = √((x₂ − x₁)² + (y₂ − y₁)²)~d = |Ax₀ + By₀ + C| / √(A² + B²)~(x − a)² + (y − b)² = R²",
+"Призма: V = S_осн·h; пирамида и конус — треть произведения площади основания на высоту. Площадь боковой поверхности правильной пирамиды — полупроизведение периметра основания на апофему. Цилиндр: V = πR²h, S_бок = 2πRh. Шар: V = 4/3·πR³, S = 4πR². Угол между прямой и плоскостью — угол между прямой и её проекцией на плоскость. Диагональ прямоугольного параллелепипеда: d² = a² + b² + c².##V = S·h (призма)~V = ⅓·S·h (пирамида)~V = ⅓·πR²h (конус)~V = 4/3·πR³ (шар)~d² = a² + b² + c²",
+"Правило произведения: если выборы независимы, число вариантов перемножается; правило суммы: взаимоисключающие варианты складываются. Перестановки n элементов — n!. Размещения учитывают порядок, сочетания — нет. При повторяющихся элементах делят на факториалы повторов. 0! = 1. Бином Ньютона раскладывает (a + b)ⁿ.##Pₙ = n!~Aₙᵏ = n!/(n − k)!~Cₙᵏ = n!/(k!(n − k)!)~Cₙᵏ = Cₙⁿ⁻ᵏ~(a + b)ⁿ = ΣCₙᵏ·aⁿ⁻ᵏ·bᵏ",
+"Классическая вероятность — отношение числа благоприятных исходов к числу всех равновозможных исходов, 0 ≤ P ≤ 1. Для несовместных событий вероятности складываются, для независимых — перемножаются. Статистика: среднее — сумма значений, делённая на их число; медиана — середина упорядоченного ряда (при чётном числе значений — среднее двух центральных); мода — самое частое значение; размах — разность максимума и минимума.##P = m/n~P(не A) = 1 − P(A)~P(A ∪ B) = P(A) + P(B) − P(A ∩ B)~P(A ∩ B) = P(A)·P(B), если A и B независимы"
+]};
+        THX.mat.forEach((str, j) => {
+            const i = j + 3, [t, f] = str.split('##');
+            Object.assign(topics.mat[i], { theory: { ru: t, az: t, en: t }, rule: f, ruOnly: true });
+        });
+
+        /* Русский язык: подробная теория, темы 1–25 */
+        const THR = [
+"Фонетика изучает звуки речи. В русском языке 6 гласных звуков ([а], [о], [у], [э], [и], [ы]) и 10 гласных букв. Согласные делятся на звонкие и глухие, твёрдые и мягкие. Буквы е, ё, ю, я после согласной показывают мягкость и дают один гласный звук, а в начале слова и после гласных, ь и ъ — два звука ([й'э]). Ь и ъ звуков не обозначают. Орфоэпия изучает нормы произношения и ударения; ударение свободное и подвижное, поэтому трудные слова нужно запоминать.##Парные по звонкости-глухости: б–п, в–ф, г–к, д–т, ж–ш, з–с~Непарные звонкие: л, м, н, р, й~Непарные глухие: х, ц, ч, щ~Ударение: звонИт, красИвее, каталОг, докумЕнт, досУг",
+"Безударный гласный в корне проверяют ударением: подберите форму или однокоренное слово, где он ударный (гОры — гора, лЕса — лес). Чередующиеся корни зависят от условий: -гар-/-гор- (под ударением а без ударения зависит от слова: загар, загорать), -кас-/-кос- (а перед суффиксом -а-), -лаг-/-лож- (а перед г, о перед ж), -раст-/-ращ-/-рос- (а перед ст, щ; исключения: росток, Ростислав, ростовщик, отрасль), -бир-/-бер-, -тир-/-тер- (и перед суффиксом -а-). Словарные слова запоминают.##-кас-/-кос-: касаться, прикосновение~-лаг-/-лож-: предлагать, предложение~-раст-/-ращ-/-рос-: растение, выращенный, вырос~-бир-/-бер-: собирать, соберу~-тир-/-тер-: стирать, сотру",
+"Парные согласные проверяют изменением слова: после согласного должен стоять гласный или сонорный (дуб — дубы, сказка — сказки). Непроизносимые согласные проверяют родственным словом: честный — честь, прелестный — прелесть. Исключения: лестница, чувство, здравствуйте, солнце. Двойные согласные в корне запоминают (касса, ванна); на стыке приставки и корня или корня и суффикса сохраняются обе (оттенок, беззаботный, длинный). Приставки на з/с: з перед звонкими и гласными (без-, воз-, из-, раз-), с перед глухими (бес-, вос-, ис-, рас-).##Проверка: дубы — ду[п], сказки — ска[с]ка~Непроизносимые: честный, радостный, звёздный, грустный~Исключения: лестница, чувство, здравствуйте, солнце~без-/бес-, раз-/рас-: беззаботный, бесполезный",
+"Приставки на з/с: перед глухим согласным пишется с (бесполезный, исчез), перед звонким или гласным — з (безвкусный, изобразить); приставка с- всегда с (сделать, спеть). Приставки пре- (значение «очень» или «пере-»: прекрасный, преодолеть) и при- (приближение, присоединение, неполнота действия: приоткрыть, пришкольный). После приставки на согласную буква и меняется на ы: безыдейный, сыграть, предыстория. Исключения: приставки меж-, сверх-, а также иноязычные контр-, пан-, пост-, суб-, транс-, супер- (межинститутский, сверхинтересный, контригра). Приставка раз- под ударением пишется как рАз-/рОз-.##Глухой → с: бесполезный, расчёт, исчезнуть~Звонкий → з: безвкусный, развод, изобразить~пре- (очень, пере-): прекрасный, преградить~при- (близость, неполнота): приморье, приоткрыть",
+"В суффиксах существительных: -чик после д, т, з, с, ж (лётчик, возчик), -щик в остальных случаях (каменщик, барабанщик); -ек, если при склонении гласный выпадает (замочек — замочка), иначе -ик (мальчик — мальчика). Суффиксы глаголов -ова-/-ева- пишутся, если в 1 лице настоящего времени -ую/-юю (рисовать — рисую, танцевать — танцую), а -ыва-/-ива- — при форме на -аю/-яю (спрашивать — спрашиваю). Суффиксы прилагательных -ск- и -к-: -ск- в большинстве (городской, дружеский), -к- после основ на ч, к, ц? (узкий, тяжкий). Суффиксы -к- и -ск- также различают по образованию слов.##-чик: лётчик, возчик; -щик: каменщик, барабанщик~-ек: замочек (замочка); -ик: мальчик (мальчика)~-ова-/-ева-: рисовать, танцевать; -ыва-/-ива-: спрашивать, расписывать~-ск-: городской, юношеский",
+"В суффиксах -ан-, -ян-, -ин- пишется одна Н (кожаный, песчаный, лебединый); исключения: стеклянный, оловянный, деревянный. НН пишется в прилагательных от существительных на -н при суффиксе -н- (туманный, карманный) и в суффиксах -онн-, -енн- (станционный, соломенный; исключение: ветреный). В полных причастиях и прилагательных от глаголов: НН при приставке, зависимых словах или суффиксах -ова-/-ева- (купленный, раненный в бою, организованный); одна Н без этих признаков (жареный картофель, кованый сундук). В кратких причастиях пишется одна Н (книга прочитана). В наречиях столько Н, сколько в прилагательном (искренне).##Одна Н: кожаный, песчаный, лебединый~Исключения: стеклянный, оловянный, деревянный~НН: туманный, станционный, купленный~Краткие: прочитана, сделан",
+"НЕ пишется слитно, если слово без него не употребляется (ненавидеть, неряха, недруг), если слово заменяется синонимом (небольшой — маленький), у существительных, прилагательных и наречий на -о/-е без противопоставления. Раздельно: с глаголами и деепричастиями (не читал, не зная), при противопоставлении с а (не высокий, а низкий), в сочетании с «далеко не», «вовсе не». С причастиями НЕ раздельно при зависимых словах (не прочитанная мной книга), слитно без них (непрочитанная книга). НИ: в отрицательных местоимениях слитно (никто, ничей), но с предлогом — раздельно (ни у кого, ни с чем).##Слитно: ненавидеть, недруг, неряха, невежда~Раздельно: не читал, не зная, не высокий, а низкий~Местоимения: никто, ничей — но: ни у кого, ни с чем~НИ...НИ: ни дня, ни ночи",
+"Слитно пишутся наречия с приставками (вверх, навсегда, послезавтра), сложные слова с соединительной гласной (самолёт, пароход). Через дефис: наречия на -ому/-ему, -и (по-новому, по-русски), приставка по- с -ски (по-дружески), -ым (по-моему), слова с кое-, -то, -либо, -нибудь (кое-что, когда-то). Слова с пол-: через дефис перед гласной, л и прописной (пол-яблока, пол-лимона, пол-Москвы), в остальных слитно (полчаса, полкилометра). Производные предлоги: слитно — вследствие, ввиду, вроде, навстречу, насчёт; раздельно — в течение, в продолжение, в связи с, в отличие от.##Дефис: по-новому, по-русски, кое-что, когда-то~Пол-: пол-лимона, пол-Москвы, но: полчаса, полкилометра~Слитно: вследствие, ввиду, вроде, навстречу~Раздельно: в течение, в связи с, в отличие от",
+"Лексика — словарный состав языка. Слово имеет лексическое значение; многозначные слова имеют прямое и переносное значения. Омонимы звучат одинаково, но значения не связаны (лук — овощ и оружие). Синонимы близки по значению, антонимы противоположны. Паронимы похожи по звучанию, но различаются значением: одеть кого-то — надеть что-то, адресат — адресант. Фразеологизм — устойчивое сочетание, значение которого нельзя вывести из слов (бить баклуши, как две капли воды). Различайте исконные слова и заимствования, устаревшие (архаизмы, историзмы) и новые (неологизмы).##Омонимы: коса (причёска, орудие, отмель)~Паронимы: одеть кого — надеть что; адресат — адресант~Фразеологизмы: бить баклуши, держать ухо востро~Архаизмы: очи, перст; историзмы: кольчуга, опричник",
+"Морфемы: корень, приставка, суффикс, окончание; основа — часть слова без окончания. Способы словообразования: приставочный (бежать → пробежать), суффиксальный (учить → учитель), приставочно-суффиксальный (окно → подоконник), бессуффиксный (прыгать → прыжок), сложение (диван-кровать, пароход), переход из одной части речи в другую (больной, столовая). При разборе по составу сначала найдите окончание (по изменению формы), затем основу, корень (подбор однокоренных), приставки и суффиксы. Чередование звуков в корне (друг — друзья) не меняет корень.##Приставочный: бежать → пробежать~Суффиксальный: школа → школьник~Приставочно-суффиксальный: окно → подоконник~Сложение: пароход, диван-кровать",
+"Существительное называет предмет и отвечает на вопросы кто? что?. Постоянные признаки: одушевлённость, собственное/нарицательное, род (мужской, женский, средний, общий), склонение (1-е: -а, -я; 2-е: нулевое окончание, -о, -е; 3-е: женский род на -ь). Непостоянные: число и падеж (6 падежей). Разносклоняемые: 10 существительных на -мя (бремя, время, вымя, знамя, имя, пламя, племя, семя, стремя, темя) и путь. Окончания: Д. и П. п. 1-го склонения — -е (к земле, о земле), 3-го — -и (к ночи, о ночи); П. п. слов на -ия, -ий, -ие — -и (в Австрии, в здании).##1 скл.: мама, земля~2 скл.: стол, окно, поле~3 скл.: ночь, мышь~Разносклоняемые: время, имя, пламя, знамя + путь",
+"Прилагательное обозначает признак предмета; вопросы какой? чей?. Разряды: качественные (имеют степени сравнения и краткую форму: красивый — красив), относительные (деревянный), притяжательные (мамин, лисий). Степени сравнения: сравнительная простая (красивее) и составная (более красивый), превосходная простая (красивейший) и составная (самый красивый). Краткая форма изменяется по родам и числам, не по падежам, и обычно служит сказуемым. Окончания зависят от падежа: красивому (Д.), о красивом (П.).##Сравнительная: красивее, более красивый~Превосходная: красивейший, самый красивый~Краткая форма: красив, красива, красиво, красивы~Притяжательные: мамин, лисий, медвежий",
+"Числительное обозначает число, количество предметов или порядок при счёте. Разряды: количественные (пять), порядковые (пятый), собирательные (двое, трое, оба), дробные (две третьих). Склонение: в простых числительных изменяется одно слово (пяти, пятью), в сложных (пятьдесят — пятидесяти) обе части, в составных — каждое слово (с двумястами пятьюдесятью). Числительные сорок, девяносто, сто в косвенных падежах имеют окончание -а (сорока, девяноста, ста). С существительными: два, три, четыре + родительный ед. числа (два стола), от пяти — родительный мн. числа (пять столов).##40, 90, 100: сорока, девяноста, ста~2, 3, 4 + Р. ед.: два стола, три окна~5 и более + Р. мн.: пять столов~Оба/обе: оба брата, обе сестры",
+"Местоимения указывают на предметы, признаки, количество, но не называют их. Разряды: личные (я, ты, он), возвратное (себя), вопросительные (кто?), относительные (который), неопределённые (кто-то, кое-кто), отрицательные (никто), притяжательные (мой), указательные (этот, тот), определительные (весь, каждый). После предлогов к местоимениям 3-го лица добавляется н (у него, к ней, с ними), но без н после наречных предлогов (благодаря ему, согласно им, навстречу ей). Неопределённые пишутся через дефис с -то, -либо, -нибудь, кое-. В отрицательных местоимениях под ударением не- (нЕкого), без ударения ни- (никОго).##Предлог + н: у него, к ней, с ними~Без н: благодаря ему, согласно им~Неопределённые: кто-то, что-либо, кое-кто~Отрицательные: нЕкого, нЕчего — никОго, ничегО",
+"Глагол обозначает действие или состояние. Начальная форма отвечает на вопросы что делать? что сделать?; вид — совершенный и несовершенный. Спряжение: II спряжение — глаголы на -ить (кроме брить, стелить) и 7 глаголов на -еть/-ать: гнать, держать, смотреть, видеть, слышать, обидеть, терпеть, вертеть, дышать, зависеть, ненавидеть (всего 11 исключений); остальные — I спряжение. Ударные окончания определяют спряжение напрямую (-ёшь — I, -ишь — II). Ь в глаголах пишется в неопределённой форме и во 2-м лице (читать, читаешь); -тся и -ться: что делает? — -тся, что делать? — -ться.##II спряжение: гнать, держать, смотреть, видеть, слышать, обидеть, терпеть, вертеть, дышать, зависеть, ненавидеть~Глаголы на -ить — II, кроме брить, стелить~-ться: что делать? (учиться); -тся: что делает? (учится)~Повелительное: прочитай, положи, ляг",
+"Причастие — особая форма глагола, обозначает признак по действию; отвечает на вопросы какой? что делающий? Действительные (читающий, прочитавший) и страдательные (читаемый, прочитанный). Суффиксы действительных: -ущ-/-ющ- (I спр.), -ащ-/-ящ- (II спр.), прошедшего времени -вш-, -ш-. Страдательных настоящего времени: -ем-/-ом- (I спр.), -им- (II спр.); прошедшего: -нн-, -енн-, -т-. Причастный оборот выделяется запятыми, если стоит после определяемого слова: Дом, построенный дедом, стоит у реки. Перед определяемым словом запятая не ставится.##Действительные: читающий, видящий, слышащий~Страдательные: читаемый, любимый, прочитанный, закрытый~Суффиксы: -ущ-/-ющ-, -ащ-/-ящ-, -вш-, -ем-/-им-, -нн-/-енн-/-т-~Дом, построенный дедом, стоит у реки.",
+"Деепричастие — особая форма глагола, обозначает добавочное действие; вопросы что делая? что сделав?; неизменяемо. Несовершенного вида: суффиксы -а, -я (читая, сидя); совершенного: -в, -вши, -ши (прочитав, вернувшись). Деепричастный оборот обособляется запятыми; не обособляются фразеологизмы (сидеть сложа руки, бежать сломя голову) и одиночные деепричастия, ставшие наречиями (стоя, лёжа, молча). Деепричастие относится к подлежащему: Идя по улице, он потерял шапку — верно; Идя по улице, у меня упала шапка — ошибка.##Несов. вид: читая, сидя, рисуя~Сов. вид: прочитав, вернувшись~Запятые: Он ответил, не поднимая глаз.~Без запятых: сидеть сложа руки",
+"Наречие обозначает признак действия или признака; неизменяемо. Разряды: образа действия (быстро), меры и степени (очень), места (вверху), времени (завтра), причины (сгоряча), цели (назло). НЕ с наречиями на -о/-е слитно, если можно заменить синонимом (неплохо — хорошо), раздельно при противопоставлении (не далеко, а близко). В наречиях пишется столько Н, сколько в слове, от которого они образованы (искренне, обыденно). Ь после шипящих пишется в наречиях (вскачь, настежь, наотмашь), кроме уж, замуж, невтерпёж. Приставки из-, до-, с- + а (издалека, досуха, слева); в-, на-, за- + о (вдвое, набело, заново).##Ь на конце: вскачь, прочь, настежь; исключения: уж, замуж, невтерпёж~из-, до-, с- + а: издалека, досуха, слева~в-, на-, за- + о: вдвое, набело, заново~Дефис: по-русски, чуть-чуть, кое-где",
+"Предлоги выражают связь слов (в, на, с). Производные предлоги: благодаря, вследствие, в течение, несмотря на, ввиду. Слитно: вследствие, ввиду, вместо, насчёт, навстречу, внутри; раздельно: в течение, в продолжение, в связи с, в отличие от. Союзы бывают сочинительные (и, а, но, или) и подчинительные (что, чтобы, потому что, если). Слитно: также, тоже, чтобы, зато, поэтому; раздельно: так же, то же, что бы, за то, потому что. Союз «чтобы» заменяется на «для того чтобы», «что бы» — это местоимение + частица.##Слитно: также, тоже, чтобы, зато, поэтому~Раздельно: так же, то же, что бы, за то, потому что~Предлоги слитно: вследствие, ввиду, вроде~Предлоги раздельно: в течение, в продолжение, в связи с",
+"Словосочетание — сочетание главного слова с зависимым по смыслу и грамматически. Типы связи: согласование (зависимое слово уподобляется главному в роде, числе, падеже: красивая девочка), управление (падеж зависимого слова определяется главным: читать книгу), примыкание (неизменяемое зависимое слово: говорить тихо, идти пешком). По главному слову различают именные (красивый дом), глагольные (читать книгу), наречные (очень быстро) словосочетания. Грамматической основы в словосочетании нет, поэтому подлежащее и сказуемое вместе словосочетания не образуют.##Согласование: новый дом, новому дому~Управление: любить природу, интересоваться музыкой~Примыкание: ехать быстро, желание помочь~Главное слово → вопрос → зависимое слово",
+"Грамматическая основа — подлежащее и сказуемое. Подлежащее: существительное или местоимение в именительном падеже, а также любое слово в роли подлежащего. Сказуемое: простое глагольное (читает), составное глагольное (хочет читать), составное именное (был учителем). Тире между подлежащим и сказуемым ставится, если оба выражены существительными в именительном падеже (Москва — столица России), при неопределённой форме глагола, перед это/вот. Не ставится при отрицании не (Он не врач), личном местоимении или сравнительных союзах как, словно, будто.##Основа: Солнце светит.~Тире: Москва — столица России. Учиться — всегда пригодится.~Без тире: Я студент. Он как лев.~Составное именное: Он был учителем.",
+"Однородные члены отвечают на один вопрос, относятся к одному слову и соединены сочинительной связью. Запятая ставится при перечислении без союза и перед а, но, зато, однако; при одиночном и запятая не нужна (Я купил хлеб и молоко). Повторяющиеся союзы и … и, ни … ни, или … или: запятая между каждыми однородными членами (И дождь, и ветер мешали ему). При обобщающем слове перед однородными членами ставится двоеточие, а после них — тире: Всё: и небо, и земля — молчало. Определения однородны, если характеризуют предмет с одной стороны (высокая, стройная берёза), и неоднородны, если с разных (красивая белая берёза).##Без запятой: хлеб и молоко~Повторяющийся союз: и дождь, и ветер~Обобщающее слово: Все цветы: розы, тюльпаны, ромашки — росли в саду.~Противопоставление: не дождь, а снег",
+"Сложное предложение имеет две и более грамматические основы. Сложносочинённое (ССП): части равноправны, соединены сочинительными союзами (и, а, но, да, или), между ними запятая. Сложноподчинённое (СПП): придаточная часть зависит от главной, присоединяется союзом или союзным словом, выделяется запятыми. Бессоюзное (БСП): запятая, точка с запятой, двоеточие или тире. Двоеточие — когда вторая часть объясняет, поясняет или указывает причину (Я знаю: всё получится); тире — при быстрой смене событий, противопоставлении, следствии или условии (Пошёл дождь — все спрятались).##ССП: Солнце село, и стало темно.~СПП: Я знаю, что вы правы.~БСП: Я знаю: всё получится.~Тире: Дождь прошёл — стало светло.",
+"Прямая речь — чужая речь, переданная дословно, в кавычках или с тире в диалоге. Если слова автора стоят после прямой речи, перед ними ставится тире, а после вопросительного или восклицательного знака слова автора пишутся с маленькой буквы: «Где ты был?» — спросил он. Если слова автора разрывают прямую речь: «Мы, — сказал он, — придём завтра». Цитаты оформляют как прямую речь; цитата, включённая в предложение, пишется с маленькой буквы без двоеточия: Пушкин писал, что «у лукоморья дуб зелёный». Косвенная речь передаёт чужие слова своими, без кавычек: Он сказал, что придёт.##«П», — а.: «Приду», — сказал он.~«П?» — а.: «Придёшь?» — спросил он.~А: «П».: Он сказал: «Приду».~Разрыв: «Мы, — сказал он, — придём завтра».",
+"Текст — группа предложений, объединённых темой и основной мыслью. Типы речи: повествование (что происходило?), описание (какой? каков?), рассуждение (почему? зачем?). Стили: разговорный, научный, официально-деловой, публицистический, художественный. Связь предложений бывает цепной (следующее предложение подхватывает слово предыдущего) и параллельной; средства связи — лексический повтор, синонимы, местоимения, союзы. Абзац — часть текста, объединённая микротемой. При анализе текста определите тему (о чём), идею (зачем автор пишет), тип и стиль речи.##Типы: повествование, описание, рассуждение~Стили: разговорный, научный, официально-деловой, публицистический, художественный~Связь: цепная, параллельная~Средства связи: повтор, синоним, местоимение, союз"
+];
+        THR.forEach((str, i) => {
+            const [t, f] = str.split('##');
+            Object.assign(topics.rus[i], { theory: { ru: t, az: t, en: t }, rule: f, ruOnly: true });
+        });
+
+        /* Новые предметы: названия тем (пока одинаково для всех языков) */
+        const TTN = {"fra": "Артикли;Род и число существительных;Прилагательные;Личные местоимения;Глаголы être и avoir;Глаголы I группы;Глаголы II и III групп;Présent;Passé composé;Imparfait;Futur simple;Conditionnel;Subjonctif;Отрицание;Вопросительные предложения;Предлоги;Числительные;Притяжательные и указательные слова;Относительные местоимения;Согласование причастия;Косвенная речь;Пассивный залог;Степени сравнения;Наречия;Чтение и лексика", "deu": "Артикли и падежи;Род существительных;Склонение прилагательных;Личные местоимения;Глаголы haben и sein;Слабые и сильные глаголы;Präsens;Perfekt;Präteritum;Futur;Порядок слов;Отделяемые приставки;Модальные глаголы;Отрицание;Предлоги с Akkusativ и Dativ;Возвратные глаголы;Придаточные предложения;Konjunktiv II;Пассив;Инфинитивные обороты;Степени сравнения;Числительные;Местоименные наречия;Относительные придаточные;Чтение и лексика", "bio": "Клетка;Органоиды клетки;Химический состав клетки;Обмен веществ;Фотосинтез;Деление клетки;Размножение организмов;Законы Менделя;Наследственность и изменчивость;Селекция;Эволюция;Систематика;Бактерии и вирусы;Грибы;Растения: ткани и органы;Беспозвоночные животные;Хордовые животные;Пищеварение;Дыхание и кровообращение;Выделение;Нервная система;Эндокринная система;Иммунитет;Экология;Биосфера", "inf": "Системы счисления;Единицы информации;Кодирование информации;Логика;Алгоритмы;Блок-схемы;Основы программирования;Переменные и ветвления;Циклы;Массивы;Строки;Функции;Файлы и папки;Операционные системы;Аппаратное обеспечение;Текстовые редакторы;Электронные таблицы;Формулы Excel;Базы данных;Презентации;Компьютерные сети;Интернет;Информационная безопасность;HTML;Моделирование", "dht": "Вооружённые силы Азербайджана;Воинские звания;Устав и дисциплина;Строевая подготовка;Автомат Калашникова;Правила стрельбы;Гранаты;Ориентирование на местности;Топографические карты;Первая помощь;Кровотечения;Переломы;Сердечно-лёгочная реанимация;Гражданская оборона;Чрезвычайные ситуации;Оружие массового поражения;Защита от радиации и химии;Мины и взрывоопасные предметы;Военная присяга;Права военнослужащих;Призыв на службу;Военная топография;Основы тактики;Связь;История Вооружённых сил"};
+        Object.keys(TTN).forEach(s => TTN[s].split(';').forEach((n, i) => {
+            const x = `${i+1}. ${emojis[i]} ${n}`; topics[s][i].title = { ru: x, az: x, en: x };
+        }));
+        /* Всеобщая история: подробная теория, темы 1–25 */
+        const THW = [
+`Первобытность делят на палеолит, мезолит, неолит и энеолит. Человек разумный появился около 300 тыс. лет назад. Огонь, орудия и охота давали выживание. В неолите (около 10 тыс. лет до н. э.) произошла «неолитическая революция»: переход от присваивающего хозяйства (охота, собирательство) к производящему (земледелие, скотоводство). Затем освоили металлы: медь, бронзу, железо.##палеолит → мезолит → неолит → энеолит~присваивающее → производящее хозяйство~медь → бронза → железо`,
+`Египет возник на берегах Нила; около 3000 г. до н. э. Верхний и Нижний Египет объединил фараон Менес (Нармер). Периоды: Древнее царство (пирамиды в Гизе, Хеопс), Среднее, Новое царство (Тутмос III, Эхнатон, Рамсес II). Фараон — верховный правитель и жрец. Письмо — иероглифы, расшифрованы Шампольоном (1822) по Розеттскому камню. Верили в загробную жизнь, отсюда мумификация.##объединение ≈ 3000 до н. э.~Древнее царство — пирамиды~Шампольон расшифровал иероглифы (1822)`,
+`Месопотамия — земля между Тигром и Евфратом. Шумер: города-государства (Ур, Урук), клинопись, зиккураты. Аккад: Саргон Древний создал первую державу. Вавилон: царь Хаммурапи (около 1750 до н. э.) издал свод законов на принципе талиона («око за око»). Ассирия: столица Ниневия, библиотека Ашшурбанипала. Нововавилонское царство: Навуходоносор II, «висячие сады».##Шумер → Аккад → Вавилон → Ассирия~законы Хаммурапи ≈ 1750 до н. э.~клинопись`,
+`Индия: цивилизация долины Инда (Хараппа, Мохенджо-Даро), варны и касты, буддизм (Будда, VI в. до н. э.), царь Ашока (III в. до н. э., Маурьи). Китай: Шан, Чжоу, Конфуций, объединение страны Цинь Шихуанди (221 до н. э.), Великая Китайская стена, империя Хань, Великий шёлковый путь. Изобретения: бумага, шёлк, компас, порох.##Цинь Шихуанди — 221 до н. э.~четыре варны~изобретения Китая: бумага, шёлк, компас, порох`,
+`Греция: полисы (города-государства), Афины — демократия (реформы Клисфена), Спарта — военный строй. Олимпийские игры с 776 до н. э. Греко-персидские войны: Марафон (490), Фермопилы и Саламин (480). Расцвет при Перикле, Пелопоннесская война (431–404). Александр Македонский (356–323) создал державу от Греции до Индии; началась эпоха эллинизма.##Марафон — 490 до н. э.~Пелопоннесская война 431–404~Александр Македонский 356–323`,
+`Рим: легенда об основании в 753 до н. э., республика с 509 до н. э. Пунические войны с Карфагеном (264–146 до н. э., Ганнибал; Карфаген разрушен). Гай Юлий Цезарь убит в 44 до н. э. Империя — с 27 до н. э. (Октавиан Август). Милан­ский эдикт (313) уравнял христианство в правах. В 395 империя разделилась, в 476 пала Западная Римская империя.##республика — 509 до н. э.~империя — 27 до н. э.~разделение — 395~падение Запада — 476`,
+`Византия — восточная часть Рима со столицей Константинополь (основан в 330). Расцвет при Юстиниане I (527–565): свод законов, собор Святой Софии. В VIII–IX вв. — иконоборчество. Раскол христианской церкви на православную и католическую — 1054. В 1204 Константинополь захватили крестоносцы, в 1453 империя пала под ударами османов (Мехмед II).##Юстиниан: 527–565~раскол церквей — 1054~падение — 1453`,
+`Раннее Средневековье: Великое переселение народов (IV–VII вв.), варварские королевства. Франки: Хлодвиг (Меровинги), затем Каролинги. Карл Великий стал императором в 800 году. Верденский договор 843 разделил империю на три части. В IX–XI вв. Европу тревожили викинги (норманны). Христианизация сближала народы Европы.##Карл Великий — 800~Верденский договор — 843~викинги — IX–XI вв.`,
+`Пророк Мухаммед (около 570–632); хиджра в Медину — 622, начало мусульманского летоисчисления. Праведные халифы, затем Омейяды (661–750, Дамаск) и Аббасиды (750–1258, Багдад). Арабские завоевания охватили Ближний Восток, Северную Африку и Испанию. Расцвет науки: Аль-Хорезми (алгебра), Ибн Сина (медицина), «Дом мудрости». В 1258 Багдад взяли монголы.##хиджра — 622~Омейяды 661–750, Аббасиды 750–1258~падение Багдада — 1258`,
+`Феодализм: земля принадлежит сеньорам, вассалы служат за лен (феод). «Лестница»: король → герцоги/графы → бароны → рыцари. Крестьяне зависели от сеньора (крепостные). Города возникали вокруг рынков, ремёсла объединялись в цехи, купцы — в гильдии (Ганза). Магна Карта (1215) ограничила власть английского короля; в 1265 созван парламент.##вассал — слуга сеньора~Магна Карта — 1215~цех — ремесленное объединение`,
+`Крестовые походы (1096–1270) — походы католической Европы на Восток под лозунгом освобождения Гроба Господня. Первый (1096–1099): взят Иерусалим. Третий (1189–1192): Ричард Львиное Сердце против Салах ад-Дина. Четвёртый (1204): захвачен Константинополь. Рыцарские ордена — тамплиеры, госпитальеры. Итог: рост торговли и усиление королевской власти.##первый поход — 1096–1099~четвёртый — 1204~ордена: тамплиеры, госпитальеры`,
+`Чингисхан объединил монголов в 1206 (курултай). Битва при Калке — 1223. Батый создал Золотую Орду. Хулагу в 1258 взял Багдад и основал государство Хулагуидов (в том числе в Азербайджане). Хубилай основал династию Юань в Китае. Монгольская империя обеспечила безопасность торговых путей. Тамерлан (1336–1405) создал державу со столицей в Самарканде.##курултай — 1206~Калка — 1223~Багдад — 1258~Тамерлан 1336–1405`,
+`Возрождение (XIV–XVI вв., Италия) — интерес к античности и человеку (гуманизм): Петрарка, Данте, Леонардо да Винчи, Микеланджело, Рафаэль. Книгопечатание — Гутенберг (около 1450). Реформация: Мартин Лютер выступил с 95 тезисами в 1517. Итоги: протестантизм (лютеране, кальвинисты), Аугсбургский мир (1555), контрреформация, иезуиты.##гуманизм — человек в центре~Гутенберг ≈ 1450~95 тезисов Лютера — 1517`,
+`Причины открытий: поиск путей в Индию и золота. Генрих Мореплаватель, Колумб достиг Америки в 1492, Васко да Гама прошёл в Индию в 1498, экспедиция Магеллана совершила первое кругосветное плавание (1519–1522). Тордесильясский договор (1494) разделил мир между Испанией и Португалией. Итоги: колониальные империи, работорговля, «революция цен».##Колумб — 1492~Васко да Гама — 1498~Магеллан — 1519–1522`,
+`Причины: конфликт Карла I с парламентом. Долгий парламент (1640), гражданская война; Оливер Кромвель победил. Казнь Карла I — 1649, республика, протекторат Кромвеля (1653). Реставрация Стюартов — 1660. «Славная революция» 1688–1689: Вильгельм Оранский; Билль о правах (1689) закрепил власть парламента — конституционная монархия.##казнь Карла I — 1649~Реставрация — 1660~Билль о правах — 1689`,
+`Просвещение (XVIII в.) — вера в разум. Локк (естественные права), Монтескьё (разделение властей), Вольтер (свобода мысли), Руссо (общественный договор), Дидро («Энциклопедия»), Кант. «Просвещённый абсолютизм»: Фридрих II Прусский, Екатерина II, Иосиф II. Идеи Просвещения подготовили революции.##Монтескьё — разделение властей~Руссо — общественный договор~«Энциклопедия» Дидро`,
+`13 британских колоний протестовали против налогов («нет налогам без представительства»); «Бостонское чаепитие» (1773). Декларация независимости принята 4 июля 1776 (Т. Джефферсон). Победа при Саратоге (1777), капитуляция при Йорктауне (1781), Парижский мир (1783). Конституция США — 1787, первый президент Дж. Вашингтон (1789).##4 июля 1776~Йорктаун — 1781~Конституция — 1787`,
+`1789: созыв Генеральных штатов, взятие Бастилии 14 июля, Декларация прав человека и гражданина (август). 1791 — конституционная монархия. 1792 — республика; казнь Людовика XVI в 1793. Якобинская диктатура и террор (Робеспьер) до переворота 9 термидора (1794). Директория. 18 брюмера 1799 к власти пришёл Наполеон Бонапарт.##14 июля 1789 — Бастилия~1793 — казнь короля~1794 — 9 термидора~1799 — Наполеон`,
+`Промышленный переворот начался в Англии в середине XVIII в.: прядильная машина Харгривса (1760-е), паровая машина Уатта (1769 — патент), паровоз Стефенсона (1825). Рост фабрик и городов, появление рабочего класса. Протесты: луддиты, чартисты. Вторая промышленная революция (конец XIX в.): электричество, сталь, нефть, конвейер.##Уатт — паровая машина~Стефенсон — 1825~луддиты — разрушение машин`,
+`Наполеон — император (1804). Гражданский кодекс (1804). Победы: Аустерлиц (1805). Континентальная блокада Англии (1806). Поход в Россию (1812) — катастрофа Великой армии. «Битва народов» под Лейпцигом (1813). Ватерлоо — 1815, ссылка на остров Св. Елены. Венский конгресс (1814–1815) восстановил старые порядки, Священный союз.##империя — 1804~Россия — 1812~Ватерлоо — 1815~Венский конгресс 1814–1815`,
+`Первая мировая война (1914–1918): Антанта (Англия, Франция, Россия) против Центральных держав (Германия, Австро-Венгрия, Турция). Повод — убийство Франца Фердинанда в Сараеве 28 июня 1914. Битвы: Марна, Верден и Сомма (1916). США вступили в 1917, Россия вышла по Брестскому миру (1918). Перемирие — 11 ноября 1918. Версальский договор (1919), Лига Наций.##28 июня 1914 — Сараево~1917 — вступление США~11 ноября 1918 — перемирие~Версаль — 1919`,
+`Русская революция 1917 и появление СССР. Муссолини пришёл к власти в Италии в 1922. Мировой экономический кризис 1929 («чёрный четверг»), «новый курс» Рузвельта. Гитлер — канцлер с 1933. Гражданская война в Испании (1936–1939). Мюнхенское соглашение (1938) — политика «умиротворения». На Южном Кавказе существовала Азербайджанская Демократическая Республика (1918–1920).##1929 — кризис~1933 — Гитлер~1938 — Мюнхен~АДР 1918–1920`,
+`Вторая мировая война: 1 сентября 1939 (нападение Германии на Польшу) — 2 сентября 1945. Пакт Молотова — Риббентропа (август 1939). 22 июня 1941 — нападение Германии на СССР, 7 декабря 1941 — Пёрл-Харбор. Сталинградская битва (1942–1943), высадка в Нормандии (6 июня 1944). Капитуляция Германии — 8–9 мая 1945; атомные бомбардировки Хиросимы и Нагасаки — август 1945. Холокост унёс около 6 млн евреев. ООН основана в 1945.##1 сентября 1939~22 июня 1941~6 июня 1944~2 сентября 1945`,
+`Холодная война — противостояние СССР и США без прямой войны. Доктрина Трумэна (1947), план Маршалла, НАТО (1949), Варшавский договор (1955). Берлинский кризис (1948–1949), война в Корее (1950–1953), Карибский кризис (1962), война во Вьетнаме. Берлинская стена (1961–1989). Распад СССР — декабрь 1991.##НАТО — 1949~Карибский кризис — 1962~Берлинская стена 1961–1989~СССР распался в 1991`,
+`Современный мир: ООН и международные организации, Европейский союз (Маастрихтский договор 1992), глобализация, интернет и цифровая революция. Теракты 11 сентября 2001. Рост Китая и Индии. Глобальные проблемы: климат (Парижское соглашение 2015), терроризм, бедность, пандемии. Региональные конфликты и безопасность.##ЕС: Маастрихт — 1992~11 сентября 2001~Парижское соглашение — 2015`
+];
+        THW.forEach((str, i) => {
+            const [t, f] = str.split('##');
+            Object.assign(topics.whi[i], { theory: { ru: t, az: t, en: t }, rule: f, ruOnly: true });
+        });
+        /* История Азербайджана: подробная теория, темы 1–25 */
+        const THH = [
+`Древнейшие следы человека в Азербайджане — пещера Азых (палеолит, найдена нижняя челюсть древнего человека), пещеры Таглар и Дамджылы. Неолит: Шомутепе, Кюльтепе; энеолит и бронза: Кура-Араксская культура, Ходжалы-Гедебейская культура. Наскальные рисунки Гобустана (ЮНЕСКО, 2007) отражают охоту, обряды и лодки; Гамигая в Нахчыване.##Азых — палеолит~Гобустан — ЮНЕСКО, 2007~Шомутепе, Кюльтепе — неолит`,
+`Манна (IX–VII вв. до н. э.) — раннее государство на юге Азербайджана, около озера Урмия. Мидия сложилась в VII в. до н. э., Киаксар разгромил Ассирию; в 550 до н. э. Мидию покорил Кир II (Ахемениды). Атропатена (с 328 до н. э.): основатель Атропат, столица Газака, государство сохраняло независимость при Александре Македонском; зороастризм был основной религией.##Манна — IX–VII вв. до н. э.~Мидия — VII в. до н. э.~Атропатена — с 328 до н. э.`,
+`Кавказская Албания — государство на севере современного Азербайджана (IV в. до н. э. – VIII в. н. э.), столицы Габала, затем Барда. В IV веке принято христианство, существовала албанская церковь. Албанский царь Вачаган III Благочестивый (V–VI вв.) укреплял христианство. В VII в. правила династия Михранидов (Джаваншир). В 705 албанскую государственность упразднили арабы.##IV в. — христианство~столицы: Габала, Барда~705 — упразднение`,
+`Арабы вторглись в Азербайджан в VII в. (около 640-х), город за городом принимали ислам; Албания стала вассалом халифата. Основные последствия: распространение ислама и арабского языка, налоги (джизья, харадж), восстания местного населения. С арабского периода возник термин «Азербайджан». Правитель Албании Джаваншир сохранял власть и боролся с хазарами.##VII в. — арабское завоевание~ислам и арабский язык~Джаваншир — правитель Албании`,
+`Восстание хуррамитов под руководством Бабека (816–837) против Арабского халифата (Аббасиды). Центр — крепость Баз (Бабек); хуррамиты опирались на крестьян и городскую бедноту. Халиф Мутасим послал против Бабека полководца Афшина. В 837 крепость пала, в 838 Бабека казнили в Самарре. Бабек — символ борьбы за свободу.##816–837 — восстание~крепость Баз~казнь — 838 (Самарра)`,
+`Ширваншахи (861–1538) — одна из старейших династий региона, столицы Шемаха и Баку. Династии: Мазъядиды, затем Кесранииды. Расцвет в XII в.: Девичья башня (Гыз галасы), поэт Хагани Ширвани при дворе. В XV в. Дворец ширваншахов в Баку (ЮНЕСКО). В 1538 государство ликвидировали Сефевиды.##861 — основание~Хагани Ширвани~Дворец ширваншахов (Баку)`,
+`Государство Эльдегизидов (атабеков) (1136–1225): основатель Шамседдин Эльдегиз, столицы — Нахчыван, затем Тебриз и Хамадан. При Мухаммаде Джахане Пехлеване и Гызыл Арслане государство стало сильнейшим на Ближнем Востоке. Период расцвета культуры: Низами Гянджеви, Хагани, Мехсети Гянджеви, архитектор Аджеми Нахчывани (мавзолей Момине хатун, 1186).##1136–1225~Эльдегиз — основатель~Аджеми Нахчывани — мавзолей Момине хатун`,
+`Монголы вторглись в Азербайджан в 1220–1221 (отряды Джебе и Субэдэя), после чего разрушили много городов. В 1235 разрушена Гянджа. Хорезмшах Джалаладдин в 1225 захватил Тебриз, но был разбит монголами. Следствия: упадок городов, сокращение населения, но и притоки скотоводов-кочевников, этнические изменения.##1220–1221 — первый поход~1235 — разрушение Гянджи~Джалаладдин — 1225`,
+`Государство Хулагуидов (Ильханов) (1256–1357): основатель Хулагу, столица — Мараге, затем Тебриз. Хулагу взял Багдад (1258). При Газан-хане (1295) ислам стал государственной религией. Визирь Рашид ад-Дин. Мараганская обсерватория (1259, Насреддин Туси). После распада — государство Джалаиридов (1359–1410).##1256–1357~Газан-хан — ислам (1295)~обсерватория в Мараге`,
+`Гарагоюнлу (1410–1468): основал Гара Юсиф, правитель Джаханшах, столица Тебриз. Аккоюнлу (1378–1501): Узун Гасан, победил Гарагоюнлу (1468), потерпел поражение от османов при Отлукбели (1473). Государства этих тюркских племён способствовали формированию азербайджанского языка и культуры. Последний аккоюнлу — Аловад, разбит Шахом Исмаилом (1501).##Гарагоюнлу — 1410–1468~Аккоюнлу — до 1501~Узун Гасан`,
+`Сефевиды (1501–1736): основатель Шах Исмаил Хатаи (1501), столица Тебриз, затем Казвин, Исфахан. Основа — орден шейха Сафиаддина Ардебили и племенные союзы кызылбашей. Чалдыранская битва (1514) с османами проиграна. Шах Аббас I (1587–1629) провёл реформы и укрепил государство. Шиизм — государственная религия. Хатаи писал стихи на азербайджанском языке.##1501 — Исмаил~1514 — Чалдыран~Шах Аббас I — 1587–1629`,
+`Надир-шах Афшар (1688–1747) в 1736 на съезде в Мугани провозглашён шахом. Основал династию Афшаридов. Присоединил Азербайджан, воевал в Индии (взял Дели в 1739). Убит в 1747, после чего Азербайджан раздробился на ханства. Тебриз, Ардебиль, Гянджа входили в его державу.##1736 — Муганский съезд~1739 — взятие Дели~1747 — убийство Надир-шаха`,
+`Ханства (середина XVIII в.): Карабахское (Панахали-хан, столица Шуша с 1752), Шекинское (Гаджи Челеби), Губинское (Фатали-хан, 1758), Бакинское, Ширванское, Гянджинское, Нахчыванское, Ереванское, Талышское и др. Борьба за власть, союзы и вражда ханов мешала объединению. Ханства сохраняли самостоятельность до русского завоевания.##Карабахское — Панахали-хан~Губинское — Фатали-хан~всего более 15 ханств`,
+`Первая русско-иранская война (1804–1813): осада Гянджи (1804), гибель Джавад-хана; завершилась Гюлистанским договором (12 октября 1813). Вторая война (1826–1828) завершилась Туркменчайским договором (10 февраля 1828): Азербайджан разделён по реке Араз; Северный остался в составе России, Южный — в Иране.##Гюлистан — 1813~Туркменчай — 1828~граница по Араксу`,
+`Колониальная политика Российской империи: упразднение ханств, деление на губернии (Бакинская, Елисаветпольская), переселение армян в Карабах и другие земли (1828–1830), ограничение прав мусульман, русификация школ, замена азербайджанского языка в делопроизводстве. При наместнике Воронцове (1844) усилилось управление. Землю получали русские чиновники и офицеры.##упразднение ханств~переселения (1828–1830)~русификация`,
+`Нефтяной бум в Баку: первая нефтяная скважина — Биби-Эйбат (1846); в 1870–80-х гг. создано предприятие «Бранобель» братьев Нобель (1879), к ним присоединились Ротшильды. Азербайджанские миллионеры: Гаджи Зейналабдин Тагиев, Муртуза Мухтаров, Шамси Асадуллаев. В 1901 Баку давал около половины мировой добычи нефти. Появление нефтепроводов, железных дорог (Баку–Батуми, 1906).##1846 — первая скважина~«Бранобель» — 1879~1901 — около 50 % мировой нефти`,
+`Национальное пробуждение: газета «Экинчи» (1875, Гасан бек Зардаби), первая театральная постановка (1873), открытие новометодных школ, журнал «Молла Насреддин» (1906). Идеи: просвещение, родной язык, национальное единство. Гаджи Зейналабдин Тагиев помогал школам. Партия «Мусават» (1911).##«Экинчи» — 1875~театр — 1873~«Мусават» — 1911`,
+`Революция 1905–1907 в Азербайджане: забастовка нефтяников (декабрь 1904), армяно-мусульманские столкновения (1905–1906), партия «Гуммет» (1904, под руководством Нариманова), создание политических организаций, выбор депутатов в Государственную Думу; активизировалось национальное движение. Печать, образование и партии стали развиваться.##декабрь 1904 — забастовка~«Гуммет» — 1904~Государственная Дума`,
+`АДР — первая демократическая и светская республика в мусульманском мире. Провозглашена 28 мая 1918 в Тифлисе Национальным советом (председатель М. Э. Расулзаде). Столица — Гянджа, с 17 сентября 1918 — Баку. Парламент открыт 7 декабря 1918; женщины получили избирательное право. Создан Бакинский государственный университет (1919), национальная армия, принят флаг (1918). Премьер: Ф. Х. Хойский. Пала 28 апреля 1920 при вторжении Красной армии. Просуществовала 23 месяца.##28 мая 1918~7 декабря 1918 — парламент~28 апреля 1920 — падение~23 месяца`,
+`28 апреля 1920 в Баку вступила 11-я Красная армия; провозглашена Азербайджанская ССР. Первый председатель Ревкома — Н. Нариманов (председатель СНК). В 1922–1936 республика входила в Закавказскую СФСР, с 1936 — самостоятельная республика СССР. Коллективизация, массовые репрессии 1937–1938, перевод алфавита: латиница (1929) → кириллица (1939). В 1923 создана НКАО.##1920 — Азербайджанская ССР~1937–1938 — репрессии~алфавит: 1929 латиница, 1939 кириллица`,
+`Во Второй мировой войне воевало около 600 тыс. азербайджанцев, около половины погибло. Баку давал около 70–75 % нефти СССР. Герои: Гази Асланов (дважды Герой), Исрафил Мамедов, Мехти Гусейнзаде («Михайло», в итальянском сопротивлении). Нападение Германии на Кавказ (операция «Эдельвейс») остановлено.##около 600 тыс. на фронте~нефть Баку — 70–75 %~Мехти Гусейнзаде`,
+`Послевоенный период: восстановление, нефтяные «Нефтяные Камни» (1949), Мингечевирская ГЭС (1953). Южный Азербайджан: образовано Азербайджанское правительство (1945–1946) во главе с Пишеври, подавлено в 1946. Мир Джафар Багиров (первый секретарь) — расстрелян в 1956. Гейдар Алиев — первый секретарь ЦК (1969–1982). Рост промышленности, науки и образования.##1949 — «Нефтяные Камни»~1953 — Мингечевирская ГЭС~Г. Алиев — с 1969`,
+`Движение за независимость: Народный фронт Азербайджана (1989), А. Эльчибей. «Чёрный январь» — 19–20 января 1990, ввод советских войск в Баку, более 130 погибших. 30 августа 1991 — декларация о восстановлении независимости; 18 октября 1991 — конституционный акт о государственной независимости. Первый президент — Аяз Муталибов (1991), А. Эльчибей избран в 1992. В 1993 — Гейдар Алиев.##Чёрный январь — 1990~18 октября 1991~Эльчибей — 1992`,
+`Карабахский конфликт: Ходжалинский геноцид (26 февраля 1992), потеря Шуши (май 1992), перемирие (май 1994). Вторая Карабахская война — 27 сентября – 10 ноября 2020 (44 дня): освобождены Шуша (8 ноября), Джебраил, Физули, Зангилан и др. Трёхстороннее заявление 10 ноября 2020. В сентябре 2023 проведены антитеррористические меры, суверенитет Азербайджана в Карабахе восстановлен. День Победы — 8 ноября.##26 февраля 1992 — Ходжалы~27.09–10.11.2020~День Победы — 8 ноября`,
+`Современный Азербайджан: «Контракт века» подписан 20 сентября 1994; нефтепровод Баку–Тбилиси–Джейхан (2005–2006); Южный газовый коридор; железная дорога Баку–Тбилиси–Карс (2017). Конституция принята 12 ноября 1995 референдумом. Президент Ильхам Алиев с 2003 года. Баку принимал Евроигры (2015), Формулу-1, COP29 (2024).##20 сентября 1994 — Контракт века~12 ноября 1995 — Конституция~БТД — 2005–2006`
+];
+        THH.forEach((str, i) => {
+            const [t, f] = str.split('##');
+            Object.assign(topics.his[i], { theory: { ru: t, az: t, en: t }, rule: f, ruOnly: true });
+        });
+        /* Азербайджанский язык: подробная теория, темы 1–25 */
+        const THA = [
+`В азербайджанском алфавите (латиница) 32 буквы: 9 гласных (a, e, ə, ı, i, o, ö, u, ü) и 23 согласных. Гласные делятся на твёрдые (a, ı, o, u) и мягкие (e, ə, i, ö, ü), а также на губные (o, ö, u, ü) и негубные. Действует закон гармонии гласных (сингармонизм): суффикс подстраивается под последний гласный корня. Ударение обычно падает на последний слог.##9 гласных + 23 согласных = 32 буквы~твёрдые: a ı o u~мягкие: e ə i ö ü~ev → evlər, kitab → kitablar`,
+`Орфография — правила письма; орфоэпия — нормы произношения. Чередование согласных на конце основы перед гласным суффиксом: k → y (çiçək → çiçəyi), q → ğ (qonaq → qonağı), p → b (kitap → kitabı), t → d (qanad → qanadı), ç → c (ağac → ağacı). Имена собственные и начало предложения пишутся с заглавной буквы. Слова переносят по слогам.##k → y: çiçək → çiçəyi~q → ğ: ayaq → ayağı~ç → c: ağac → ağacı`,
+`Лексика — словарный состав языка. По происхождению: исконно тюркские слова, арабо-персидские заимствования, слова из русского и европейских языков. По употреблению: активный и пассивный запас; архаизмы, неологизмы, диалектизмы, термины. Слово имеет прямое и переносное значение; многозначные слова и омонимы (слова с одинаковым звучанием, но разным значением).##прямое/переносное значение~архаизмы, неологизмы, диалектизмы~омонимы: одинаково звучат, значения разные`,
+`Синонимы — слова, близкие по значению (gözəl — qəşəng — göyçək). Антонимы — противоположные по значению (yaxşı — pis, tez — gec, işıq — qaranlıq). Омонимы звучат одинаково, но значения разные; паронимы похожи по звучанию, но различаются значением. Синонимы различаются оттенками и стилистической окраской.##gözəl = qəşəng (синонимы)~yaxşı ↔ pis (антонимы)~синонимы — оттенки значения`,
+`Фразеологизм — устойчивое сочетание слов с целостным значением (dil tapmaq — находить общий язык, əl çəkmək — отказаться, göz yummaq — закрывать глаза). Нельзя менять порядок слов или заменять слова. Пословицы и поговорки тоже относятся к устойчивым выражениям. В предложении фразеологизм обычно является одним членом.##целостное значение~нельзя заменять слова~dil tapmaq, göz yummaq`,
+`Морфемы: корень (kök) и суффиксы (şəkilçi). Азербайджанский язык — агглютинативный: к корню последовательно присоединяются суффиксы, приставок в исконных словах нет (приставки только в заимствованиях: bi-, na-, anti-, qeyri-). Суффиксы бывают словообразующие (-çı, -lıq) и формообразующие (-lar, -ın, -da). Порядок: корень + словообразующий + множественное число + принадлежность + падеж.##kök + şəkilçi~ev + lər + im + də = evlərimdə~приставок нет`,
+`Способы образования слов: суффиксальный (iş → işçi, dost → dostluq, bağ → bağlı), сложение (günəbaxan, ağsaqqal), парные слова (ata-ana, dost-aşna), сокращения, повтор. Суффиксы: -çı/-çi/-çu/-çü (профессия), -lıq/-lik/-luq/-lük (абстрактность), -lı/-li (обладание), -sız/-siz (отсутствие). Слова бывают простые, производные и сложные.##-çı — профессия: işçi~-lıq — абстрактность: dostluq~-sız — отсутствие: evsiz`,
+`Существительное отвечает на вопросы kim? nə?. Рода нет. Число: единственное и множественное (-lar/-lər). Падежей 6: основной (kim? nə?), родительный (kimin? -ın), винительный (kimi? nəyi? -ı), дательный (kimə? nəyə? -a/-ə), местный (kimdə? -da/-də), исходный (kimdən? -dan/-dən). Принадлежность: mənim kitabım, sənin kitabın, onun kitabı.##основной: kitab~родительный: kitabın~винительный: kitabı~дательный: kitaba~местный: kitabda~исходный: kitabdan`,
+`Прилагательное обозначает признак и отвечает на вопросы necə? hansı? Бывают качественные (gözəl, böyük) и относительные (daşdan, dəmir). Степени: обычная, уменьшительная (qırmızımtıl), усиленная: с помощью слов daha, ən, çox или удвоения (ap-aydın, qapqara, yamyaşıl). Прилагательное не изменяется по числу и падежу, стоит перед существительным.##обычная: gözəl~уменьшительная: -ımtıl~усиленная: ap-aydın, qapqara~ən gözəl — высшая`,
+`Числительные: количественные (bir, iki, on), порядковые (-ıncı/-inci/-uncu/-üncü: beşinci), собирательные (ikisi, üçü), дробные (yarım, dörddə bir), приблизительные (onlarla, yüzlərlə). После числительного существительное остаётся в единственном числе: üç kitab. Порядковое числительное, записанное цифрой, пишется с дефисом: 5-ci.##üç kitab (ед. число)~5-ci = beşinci~дробные: dörddə bir`,
+`Местоимения: личные (mən, sən, o, biz, siz, onlar), указательные (bu, o, həmin), вопросительные (kim, nə, hansı, neçə), неопределённые (kimsə, nəsə, hansısa), определительные (hamı, hər kəs, bütün), отрицательные (heç kim, heç nə), возвратное (öz). Склоняются по падежам: mən → mənim, mənə, məndə, məndən. Местоимение «o» без рода (он, она, оно).##mən → mənim → mənə~sual: kim, nə, hansı~o — он/она/оно`,
+`Глагол — действие (nə etmək?). Начальная форма — masdar (-maq/-mək). Времена: настоящее (-ır/-ir/-ur/-ür: yazıram), прошедшее на -dı (yazdım) и на -mış (yazmışam), будущее на -acaq/-əcək (yazacağam) и неопределённое будущее на -ar/-ər. Отрицание: -ma/-mə (yazmadım). Лицо и число выражаются личными окончаниями. Залоги: действительный, страдательный (-ıl), возвратный (-ın), взаимный (-ış), побудительный (-dır).##yaz + ır + am = yazıram~прошедшее: -dı, -mış~будущее: -acaq/-əcək~отрицание: -ma/-mə`,
+`Наклонения: изъявительное (yazıram), повелительное (yaz, yazsın, yazın), условное (-sa/-sə: yazsam), желательное (-a/-ə: yazam), долженствования (-malı/-məli: yazmalıyam), необходимое (-ası/-əsi: yazası). Повелительное наклонение употребляется во 2 и 3 лице. Условное наклонение выражает условие в сложных предложениях.##условное: gəlsə~желательное: gələm~долженствование: gəlməliyəm`,
+`Причастие (feli sifət): -an/-ən (gələn, yazan), -mış (yazılmış), -acaq/-əcək (gələcək), -ar/-ər, -dığı; отвечает на вопросы hansı? Деепричастие (feli bağlama): -ıb/-ib/-ub/-üb (gəlib), -araq/-ərək (gülərək), -ınca/-ince (gələnə qədər — «пока не придёт» — как оборот), -dıqda/-dikdə (gəldikdə). Деепричастный оборот выделяется запятой. Масдар (-maq/-mək) называет действие.##причастие: gələn adam~деепричастие: gülərək dedi~-ıb/-ib: oxuyub`,
+`Наречие обозначает признак действия и отвечает на вопросы necə? nə vaxt? harada? nə qədər? Разряды: образа действия (tez, yavaş), времени (bu gün, sabah, indi), места (yuxarı, aşağı, burada), количества (çox, az), причины и цели. Степени сравнения образуются так же, как у прилагательных: daha tez, ən tez. Наречие не изменяется.##tez, yavaş — образ действия~sabah, indi — время~çox, az — количество`,
+`Служебные части речи: послелоги (üçün, ilə, kimi, qədər, görə, haqqında), союзы (və, amma, lakin, çünki, yaxud, ki), частицы (yalnız, ancaq, hətta, da/də, məgər, axı), модальные слова (yəqin, şübhəsiz, bəlkə), междометия (ay, vay, aha). Послелоги стоят после слова, с которым связаны: mənim üçün (для меня). Предлогов в азербайджанском языке нет.##üçün, ilə, kimi — послелоги~və, amma, lakin — союзы~yalnız, hətta — частицы`,
+`Словосочетание состоит из главного и зависимого слова. Определительные словосочетания: I тип (без показателей: daş ev), II тип (родительный падеж и принадлежность: evin damı), III тип (только принадлежность: məktəb binası). Связи: управление (kitabı oxumaq), примыкание (tez getmək), согласование (ограниченное). Главное слово стоит последним.##I тип: daş ev~II тип: evin damı~III тип: məktəb binası`,
+`Главные члены: подлежащее (mübtəda — kim? nə?) и сказуемое (xəbər — nə edir?). Второстепенные: определение (təyin), дополнение (tamamlıq), обстоятельство (zərflik: места, времени, образа действия, причины, цели). Порядок слов: подлежащее — дополнение — сказуемое (SOV): Mən kitab oxuyuram. Сказуемое стоит в конце предложения.##порядок: подлежащее + дополнение + сказуемое~Mən kitab oxuyuram~обстоятельство: harada? nə vaxt?`,
+`Однородные члены отвечают на один вопрос и относятся к одному слову. Между ними ставится запятая (Alma, armud, nar aldım). Перед союзами amma, lakin, yalnız запятая ставится; между однородными членами, соединёнными союзом «və», запятая не ставится. Обобщающее слово ставится перед или после однородных членов с двоеточием или тире.##запятая при перечислении~və — без запятой~амма, лакин — с запятой`,
+`Обращение — слово, называющее того, к кому обращаются; выделяется запятой (Əli, bura gəl!). Вводные слова выражают отношение к высказыванию: уверенность (əlbəttə, şübhəsiz), предположение (yəqin, bəlkə), источник сообщения (məncə, deyilənə görə), порядок мыслей (birincisi, deməli). Выделяются запятыми. Они не являются членами предложения.##Əli, bura gəl — обращение~əlbəttə, yəqin — вводные слова~выделяются запятыми`,
+`Сложносочинённое (tabesiz mürəkkəb) предложение состоит из равноправных частей. Союзы: və, amma, lakin, yaxud, həm ... həm də. Части соединены союзами или без них; между ними ставится запятая, точка с запятой или тире. Виды: соединительные, противительные, разделительные.##и: və~но: amma, lakin~или: yaxud, ya ... ya`,
+`В сложноподчинённом (tabeli mürəkkəb) предложении есть главная и придаточная части. Союзы: ki, çünki, ona görə ki, əgər, nə qədər ki, hərçənd. Придаточные: подлежащего, сказуемого, дополнения, определения, обстоятельственные (времени, места, образа действия, причины, цели, условия, уступки, следствия). Придаточное от главного отделяется запятой.##ki, çünki, əgər — союзы~главная + придаточная~запятая между частями`,
+`Прямая речь передаёт чужие слова дословно: Əli dedi: – Sabah gələcəyəm. Слова автора ставятся до или после прямой речи; перед прямой речью ставится двоеточие и тире, после — тире. Косвенная речь передаёт чужие слова от лица говорящего, часто с союзом ki, без кавычек и тире: Əli dedi ki, sabah gələcək.##прямая: Əli dedi: – Gəlirəm~косвенная: Əli dedi ki, gəlir~двоеточие и тире`,
+`Знаки препинания: точка (.), запятая (,), точка с запятой (;), двоеточие (:), тире (–), вопросительный (?), восклицательный (!), многоточие (...), скобки, кавычки. Запятая выделяет обращения, вводные слова, однородные члены, части сложных предложений. Двоеточие ставится перед перечислением и прямой речью. Тире — между подлежащим и сказуемым в определённых случаях.##. , ; : – ? ! ...~запятая: обращение, вводные слова~двоеточие: перед прямой речью`,
+`Текст — группа предложений, объединённых темой и основной мыслью. Типы речи: описание (necədir?), повествование (nə baş verdi?), рассуждение (niyə?). Стили: художественный, публицистический, научный, официально-деловой, разговорный. Связь предложений: цепная и параллельная. План помогает раскрыть тему.##типы: описание, повествование, рассуждение~стили: 5~связь: цепная, параллельная`
+];
+        THA.forEach((str, i) => {
+            const [t, f] = str.split('##');
+            Object.assign(topics.aze[i], { theory: { ru: t, az: t, en: t }, rule: f, ruOnly: true });
+        });
+        /* Физика и химия: подробная теория, темы 1–25 */
+        const THP = [
+`Механическое движение — изменение положения тела относительно тела отсчёта. Траектория — линия движения, путь s — длина траектории (скаляр), перемещение — вектор из начальной точки в конечную. Скорость — быстрота изменения положения. Движение относительно: скорости складываются векторно.##v = s / t~v = v₁ ± v₂ (относительная скорость)~vср = s_общ / t_общ`,
+`Равномерное: v = const, a = 0. Равноускоренное: a = const. Если тело тормозит, a < 0. График v(t) при равноускоренном движении — прямая, путь равен площади под графиком. Путь за n-ю секунду: s = v₀ + a(2n − 1)/2.##x = x₀ + vt~v = v₀ + at~s = v₀t + at²/2~s = (v² − v₀²) / 2a`,
+`Свободное падение — движение только под действием силы тяжести, g ≈ 10 м/с². Время и скорость не зависят от массы. При броске вверх скорость в верхней точке равна нулю, время подъёма равно времени падения. Горизонтальный бросок — равномерное движение по x и свободное падение по y.##v = gt~h = gt²/2~v = √(2gh)~H_max = v₀² / 2g`,
+`I закон: если сумма сил равна нулю, тело покоится или движется равномерно. II закон: ускорение прямо пропорционально равнодействующей силе и обратно пропорционально массе. III закон: силы действия и противодействия равны по модулю, противоположны по направлению и приложены к разным телам.##F = ma~F₁₂ = −F₂₁~P = m(g ± a) (вес в лифте)`,
+`Тяжесть направлена к центру Земли. Сила упругости (закон Гука) возникает при деформации. Трение скольжения не зависит от площади соприкосновения; трение покоя меняется от 0 до максимума. Закон всемирного тяготения: сила притяжения прямо пропорциональна массам и обратно — квадрату расстояния.##F_т = mg~F_упр = kx~F_тр = μN~F = G·m₁m₂ / r²`,
+`Импульс — векторная величина, равная произведению массы на скорость. Изменение импульса равно импульсу силы. В замкнутой системе суммарный импульс сохраняется. Абсолютно неупругий удар: тела движутся вместе, часть энергии переходит во внутреннюю. Реактивное движение основано на отбросе части массы.##p = mv~F·Δt = Δp~m₁v₁ + m₂v₂ = (m₁ + m₂)u~m₁v₁ + m₂v₂ = m₁u₁ + m₂u₂`,
+`Работа силы — произведение силы на перемещение и косинус угла между ними; она равна изменению кинетической энергии. Потенциальная энергия зависит от высоты или деформации. В замкнутой системе при отсутствии трения полная механическая энергия сохраняется. Мощность — работа за единицу времени, КПД — доля полезной работы.##A = F·s·cos α~E_k = mv²/2~E_p = mgh~E_p = kx²/2~N = A/t = Fv~η = A_п / A_з · 100%`,
+`Колебания — повторяющееся движение. Амплитуда — наибольшее отклонение, период — время одного колебания, частота — число колебаний в секунду. Период математического маятника не зависит от массы. Волна переносит энергию, но не вещество; поперечные и продольные. Звук — продольная волна.##T = 1/ν~T = 2π√(l/g)~T = 2π√(m/k)~λ = vT = v/ν`,
+`Условия равновесия: сумма сил равна нулю и сумма моментов равна нулю. Момент силы — произведение силы на плечо. Давление — сила на единицу площади. Закон Паскаля: давление в жидкости передаётся одинаково во все стороны. Сила Архимеда равна весу вытесненной жидкости: тело плавает, если ρ_тела < ρ_жидкости.##M = F·d~F₁d₁ = F₂d₂~p = F/S~p = ρgh~F_А = ρ_ж·g·V`,
+`Основные положения МКТ: вещество состоит из частиц, они беспорядочно движутся, между ними действуют силы притяжения и отталкивания. Количество вещества измеряется в молях, в моле 6·10²³ частиц. Температура пропорциональна средней кинетической энергии частиц. T(К) = t(°C) + 273.##ν = N / N_A~ν = m / M~p = nkT~E = 3kT/2~N_A = 6,02·10²³ моль⁻¹`,
+`Уравнение состояния связывает p, V, T и количество газа. Изотермический процесс (T = const): pV = const. Изобарный (p = const): V/T = const. Изохорный (V = const): p/T = const. Температуру всегда подставляйте в кельвинах.##pV = νRT~p₁V₁/T₁ = p₂V₂/T₂~p₁V₁ = p₂V₂~V₁/T₁ = V₂/T₂~p₁/T₁ = p₂/T₂`,
+`Внутренняя энергия идеального газа зависит только от температуры. Первый закон: подведённое тепло идёт на изменение внутренней энергии и работу газа. Адиабатный процесс — без теплообмена. КПД тепловой машины не превышает КПД идеальной машины Карно. Количество теплоты при нагревании пропорционально массе и разности температур.##Q = ΔU + A~A = pΔV~Q = cmΔt~Q = λm (плавление)~η = (Q₁ − Q₂)/Q₁~η_max = 1 − T₂/T₁`,
+`Заряды одного знака отталкиваются, разных — притягиваются; заряд сохраняется и дискретен (e = 1,6·10⁻¹⁹ Кл). Напряжённость поля — сила, действующая на единичный заряд. Потенциал — энергия единичного заряда. Конденсатор накапливает заряд и энергию.##F = k·q₁q₂ / r²~E = F/q = kq/r²~φ = kq/r~C = q/U~W = CU²/2`,
+`Постоянный ток — упорядоченное движение зарядов. Сила тока — заряд за единицу времени. Источник тока имеет ЭДС и внутреннее сопротивление. Работа и мощность тока вычисляются по напряжению и силе тока; нагревание проводника описывает закон Джоуля — Ленца.##I = q/t~A = UIt~P = UI = I²R = U²/R~Q = I²Rt~ε = A_ст / q`,
+`Закон Ома для участка цепи: сила тока прямо пропорциональна напряжению и обратно пропорциональна сопротивлению. Последовательно: ток одинаков, напряжения и сопротивления складываются. Параллельно: напряжение одинаково, токи складываются, проводимости складываются.##I = U/R~R = ρl/S~R_посл = R₁ + R₂~1/R_пар = 1/R₁ + 1/R₂~I = ε / (R + r) (полная цепь)`,
+`Магнитное поле создаётся движущимися зарядами и токами. Направление линий определяется правилом буравчика, силы — правилом левой руки. Сила Ампера действует на проводник с током, сила Лоренца — на движущийся заряд. Заряд в магнитном поле движется по окружности.##F_А = B·I·l·sin α~F_Л = q·v·B·sin α~R = mv/(qB)~Ф = B·S·cos α`,
+`Электромагнитная индукция: при изменении магнитного потока в контуре возникает ЭДС. Правило Ленца: индукционный ток направлен так, чтобы противодействовать изменению потока. Самоиндукция — индукция в собственном контуре. Энергия магнитного поля катушки пропорциональна квадрату тока.##ε = −ΔФ/Δt~ε = B·l·v·sin α~Ф = L·I~W = LI²/2`,
+`Переменный ток меняется по гармоническому закону. Действующие значения — это значения постоянного тока с тем же тепловым действием. Трансформатор меняет напряжение: повышающий имеет k < 1. Потери при передаче энергии уменьшают повышением напряжения. Частота в сети — 50 Гц.##u = U_m·sin(ωt)~U = U_m/√2~I = I_m/√2~U₁/U₂ = N₁/N₂ = k~ω = 2πν`,
+`Свет в однородной среде распространяется прямолинейно. Закон отражения: угол падения равен углу отражения. Закон преломления: sin α / sin β = n. Полное внутреннее отражение возможно при переходе в оптически менее плотную среду. Для линзы: изображение действительное, если предмет дальше фокуса собирающей линзы.##α = γ~sin α / sin β = n₂/n₁~n = c/v~1/F = 1/d + 1/f~D = 1/F~Г = f/d`,
+`Свет — электромагнитная волна. Интерференция — сложение когерентных волн: максимум при разности хода, равной целому числу длин волн, минимум — полуцелому. Дифракция — огибание препятствий. Дисперсия — зависимость показателя преломления от длины волны. Поляризация доказывает поперечность света.##Δ = kλ (максимум)~Δ = (2k+1)λ/2 (минимум)~d·sin φ = kλ~c = λν`,
+`Постулаты СТО: законы физики одинаковы во всех инерциальных системах; скорость света в вакууме постоянна. Следствия: замедление времени, сокращение длины, относительность одновременности. Масса и энергия связаны. Скорость света — предельная скорость.##E = mc²~E₀ = m₀c²~t = t₀ / √(1 − v²/c²)~l = l₀·√(1 − v²/c²)~c = 3·10⁸ м/с`,
+`Квантовая физика: свет излучается порциями — фотонами. Фотоэффект: электроны вылетают из металла, если энергия фотона не меньше работы выхода (красная граница). Интенсивность света определяет число электронов, частота — их энергию. Частицы обладают волновыми свойствами.##E = hν = hc/λ~hν = A_вых + E_k~λ_кр = hc/A~p = h/λ~h = 6,63·10⁻³⁴ Дж·с`,
+`Модель Резерфорда: ядро в центре, электроны вокруг. Постулаты Бора: электрон находится на стационарных орбитах, излучение происходит при переходе между ними. При переходе вниз фотон излучается, вверх — поглощается. Линейчатые спектры — «отпечатки» элементов.##hν = E_m − E_n~E_n = −13,6 / n² эВ~r_n = n²r₁`,
+`Радиоактивность — самопроизвольный распад ядер. α — ядро гелия, β — электроны, γ — фотоны высокой энергии. Закон распада: за период полураспада число ядер уменьшается вдвое. Активность — число распадов в секунду.##N = N₀·2^(−t/T)~A = λN~λ = ln2 / T~α: A→A−4, Z→Z−2~β: A→A, Z→Z+1`,
+`При ядерных реакциях сохраняются заряд (Z) и массовое число (A). Энергия связи равна дефекту масс, умноженному на c². Деление тяжёлых ядер и синтез лёгких высвобождают энергию. Цепная реакция управляется замедлителем и поглотителем нейтронов.##ΔE = Δm·c²~Δm = Zm_p + Nm_n − m_я~1 а.е.м. = 931,5 МэВ~A = Z + N`
+];
+        const THC = [
+`Атом — наименьшая частица элемента, молекула — наименьшая частица вещества, сохраняющая его свойства. Относительная атомная масса показывает, во сколько раз масса атома больше 1/12 массы углерода-12. Моль — 6·10²³ частиц. Закон сохранения массы: масса веществ до реакции равна массе после.##n = m / M~n = N / N_A~n = V / V_m (V_m = 22,4 л/моль)~ω = m(в-ва) / m(смеси) · 100%`,
+`Периодический закон: свойства элементов периодически зависят от заряда ядра. Период — горизонтальный ряд, группа — вертикальный столбец. В периоде слева направо металлические свойства ослабевают, неметаллические растут; в группе сверху вниз — наоборот. Номер группы (А) равен числу валентных электронов.##№ периода = число электронных слоёв~№ группы = число валентных e⁻~ЭО растёт: слева направо и снизу вверх`,
+`Атом состоит из ядра (протоны и нейтроны) и электронов. Порядковый номер равен числу протонов. Электроны заполняют уровни и подуровни по принципу наименьшей энергии; на s-подуровне 2 электрона, на p — 6, на d — 10. Изотопы — атомы с одинаковым Z и разным A.##Z = p = e⁻~A = p + n~1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d¹⁰~максимум на уровне: 2n²`,
+`Ковалентная связь образуется общими электронными парами: неполярная (одинаковые атомы) и полярная (разные). Ионная — между металлом и неметаллом, возникает при переходе электронов. Металлическая связь — в металлах. Водородная связь — между молекулами H₂O, NH₃, спиртов; повышает температуру кипения. Кристаллические решётки: ионные и атомные — прочные, молекулярные — летучие.##Cl₂ — ковалентная неполярная~HCl — ковалентная полярная~NaCl — ионная`,
+`Валентность — число химических связей атома. Высшая валентность равна номеру группы. Степень окисления — условный заряд атома. В простых веществах она равна 0; у H в большинстве соединений +1, у O −2 (исключения: пероксиды −1, OF₂). Сумма степеней окисления в молекуле равна нулю.##H₂SO₄: +1·2 + x + (−2)·4 = 0 → x = +6~высшая с.о. = № группы~низшая с.о. = № группы − 8`,
+`Простые вещества — металлы и неметаллы. Сложные: оксиды, основания, кислоты, соли. Оксиды: ЭₓOᵧ. Основания: металл + OH. Кислоты: водород + кислотный остаток. Соли: металл + кислотный остаток. Амфотерные вещества (Al, Zn, Be) реагируют и с кислотами, и со щелочами.##оксид: Na₂O, CO₂~основание: NaOH, Cu(OH)₂~кислота: HCl, H₂SO₄~соль: NaCl, CaCO₃`,
+`Основные оксиды (оксиды металлов) реагируют с кислотами и водой с образованием щёлочи. Кислотные оксиды (неметаллов) реагируют с основаниями и водой с образованием кислоты. Амфотерные: ZnO, Al₂O₃, BeO. Несолеобразующие: CO, NO, N₂O.##CaO + H₂O = Ca(OH)₂~CO₂ + 2NaOH = Na₂CO₃ + H₂O~Al₂O₃ + 6HCl = 2AlCl₃ + 3H₂O`,
+`Кислоты: бескислородные (HCl) и кислородсодержащие (H₂SO₄); по основности одно-, двух-, трёхосновные. Реагируют с металлами в ряду активности до водорода, с основными оксидами, основаниями, солями. Серная концентрированная и азотная кислоты окисляют металлы без выделения водорода.##Zn + 2HCl = ZnCl₂ + H₂↑~CuO + H₂SO₄ = CuSO₄ + H₂O~HCl + AgNO₃ = AgCl↓ + HNO₃`,
+`Основания: растворимые (щёлочи — LiOH, NaOH, KOH, Ba(OH)₂, Ca(OH)₂) и нерастворимые. Щёлочи меняют окраску индикаторов: фенолфталеин — малиновый, лакмус — синий. Нерастворимые основания при нагревании разлагаются на оксид и воду. Амфотерные гидроксиды реагируют и с кислотой, и со щёлочью.##Cu(OH)₂ →(t) CuO + H₂O~2NaOH + CO₂ = Na₂CO₃ + H₂O~Zn(OH)₂ + 2NaOH = Na₂[Zn(OH)₄]`,
+`Соли: средние, кислые, основные, комплексные. Реагируют с металлами (более активный вытесняет менее активный), кислотами, щелочами, другими солями, если образуется осадок, газ или вода. Многие соли разлагаются при нагревании. Гидролиз: соль слабой кислоты и сильного основания — щелочная среда, сильной кислоты и слабого основания — кислая.##Fe + CuSO₄ = FeSO₄ + Cu~CaCO₃ →(t) CaO + CO₂↑~BaCl₂ + Na₂SO₄ = BaSO₄↓ + 2NaCl`,
+`Раствор — однородная смесь растворителя и растворённого вещества. Растворимость показывает, сколько граммов вещества растворяется в 100 г воды при данной температуре. Массовая доля — отношение массы вещества к массе раствора. При разбавлении масса вещества не меняется.##ω = m(в-ва) / m(р-ра) · 100%~m(р-ра) = m(в-ва) + m(H₂O)~C = n / V (моль/л)~m₁ω₁ + m₂ω₂ = (m₁+m₂)ω`,
+`Электролиты в растворе распадаются на ионы: кислоты → H⁺, щёлочи → OH⁻, соли → катионы металла и анионы кислотного остатка. Сильные электролиты диссоциируют полностью (HCl, NaOH, большинство солей), слабые — частично (H₂CO₃, NH₃·H₂O, H₂S). Степень диссоциации α — доля распавшихся молекул.##α = n(дисс) / n(общ)~NaCl → Na⁺ + Cl⁻~H₂SO₄ → 2H⁺ + SO₄²⁻~Ba(OH)₂ → Ba²⁺ + 2OH⁻`,
+`Реакции обмена идут до конца при образовании осадка, газа или слабого электролита (воды). Алгоритм: молекулярное уравнение → полное ионное (сильные электролиты записывают ионами) → сокращённое (убирают одинаковые ионы). Осадки, газы и слабые электролиты записывают молекулярно.##AgNO₃ + NaCl = AgCl↓ + NaNO₃~Ag⁺ + Cl⁻ = AgCl↓~H⁺ + OH⁻ = H₂O`,
+`ОВР — реакции с изменением степеней окисления. Окислитель принимает электроны (степень окисления понижается), восстановитель отдаёт (повышается). Электронный баланс: число отданных электронов равно числу принятых. Сильные окислители: KMnO₄, K₂Cr₂O₇, HNO₃, конц. H₂SO₄, O₂, Cl₂.##Zn⁰ − 2e⁻ → Zn²⁺ (восстановитель)~Cu²⁺ + 2e⁻ → Cu⁰ (окислитель)~Σ отданных e⁻ = Σ принятых e⁻`,
+`Скорость реакции — изменение концентрации вещества в единицу времени. Растёт при повышении концентрации, температуры, площади поверхности и при добавлении катализатора. Правило Вант-Гоффа: при нагревании на 10 °C скорость увеличивается в 2–4 раза. Закон действующих масс: скорость пропорциональна концентрациям реагентов.##v = ΔC / Δt~v = k·[A]^a·[B]^b~v₂ = v₁·γ^((t₂−t₁)/10)`,
+`Химическое равновесие: скорости прямой и обратной реакций равны, концентрации постоянны. Принцип Ле Шателье: при внешнем воздействии равновесие смещается в сторону, ослабляющей воздействие. Повышение температуры смещает равновесие к эндотермической реакции, повышение давления — в сторону меньшего числа молей газа. Катализатор равновесие не смещает.##K = [C]^c·[D]^d / ([A]^a·[B]^b)~v_пр = v_обр~↑p → сторона с меньшим числом молей газа`,
+`Металлы расположены в ряду активности: активные (Li…Na, Ca, Mg, Al) вытесняют водород из воды (щелочные и щёлочноземельные) и кислот. Металлы до H вытесняют водород из кислот, правее H — нет. Железо в кислотах даёт Fe²⁺, с хлором — Fe³⁺. Алюминий пассивируется концентрированными HNO₃ и H₂SO₄ на холоде. Коррозия — окисление металла средой.##2Na + 2H₂O = 2NaOH + H₂↑~2Al + 6HCl = 2AlCl₃ + 3H₂↑~Fe + S →(t) FeS~2Fe + 3Cl₂ = 2FeCl₃`,
+`Неметаллы: галогены, халькогены, азот, углерод, кремний. Галогены: F₂ > Cl₂ > Br₂ > I₂ по окислительной способности; более активный вытесняет менее активный из солей. Азот: NH₃ — основание, HNO₃ — сильный окислитель. Сера: SO₂, H₂SO₄. Углерод — аллотропия (алмаз, графит).##Cl₂ + 2KBr = 2KCl + Br₂~N₂ + 3H₂ ⇌ 2NH₃~S + O₂ = SO₂~4NH₃ + 5O₂ = 4NO + 6H₂O`,
+`Электролиз — окислительно-восстановительный процесс на электродах под действием тока. На катоде восстанавливаются катионы, на аноде окисляются анионы. Металлы до Al не выделяются из раствора — выделяется водород. Закон Фарадея: масса вещества пропорциональна заряду.##катод(−): восстановление~анод(+): окисление~2NaCl + 2H₂O → 2NaOH + H₂↑ + Cl₂↑~m = M·I·t / (n·F)~F = 96500 Кл/моль`,
+`Углеводороды: алканы CₙH₂ₙ₊₂ (реакции замещения), алкены CₙH₂ₙ (одна двойная связь, присоединение, полимеризация), алкины CₙH₂ₙ₋₂ (тройная связь), арены (бензол C₆H₆). Изомерия — одинаковый состав, разное строение. Горение даёт CO₂ и H₂O. Качественная реакция на кратные связи — обесцвечивание бромной воды.##CH₄ + Cl₂ →(hν) CH₃Cl + HCl~C₂H₄ + Br₂ = C₂H₄Br₂~C₂H₂ + 2H₂ = C₂H₆~nCH₂=CH₂ → (−CH₂−CH₂−)ₙ`,
+`Спирты содержат группу −OH: одно-, двух- и трёхатомные (этиленгликоль, глицерин). Реагируют с натрием с выделением водорода, с кислотами с образованием эфиров, при дегидратации дают алкены или эфиры. Фенол — слабая кислота, реагирует с NaOH и бромной водой. Качественная реакция на многоатомные спирты — свежий Cu(OH)₂ (ярко-синий раствор).##2C₂H₅OH + 2Na = 2C₂H₅ONa + H₂↑~C₂H₅OH →(H₂SO₄, t>140°) C₂H₄ + H₂O~C₆H₅OH + NaOH = C₆H₅ONa + H₂O`,
+`Альдегиды содержат группу −CHO, карбоновые кислоты — −COOH. Альдегиды окисляются до кислот (реакция серебряного зеркала, Cu(OH)₂ при нагревании — кирпично-красный осадок Cu₂O) и восстанавливаются до спиртов. Карбоновые кислоты проявляют общие свойства кислот и вступают в реакцию этерификации. Муравьиная кислота даёт реакцию серебряного зеркала.##CH₃CHO + Ag₂O → CH₃COOH + 2Ag↓~CH₃CHO + H₂ → C₂H₅OH~2CH₃COOH + Mg = (CH₃COO)₂Mg + H₂↑`,
+`Сложные эфиры образуются при реакции кислоты со спиртом (этерификация, обратимая, катализатор — H₂SO₄); гидролиз в щелочной среде необратим (омыление). Жиры — сложные эфиры глицерина и высших карбоновых кислот: твёрдые (насыщенные) и жидкие (ненасыщенные, обесцвечивают бромную воду). Мыла — соли высших кислот.##RCOOH + R'OH ⇌ RCOOR' + H₂O~RCOOR' + NaOH → RCOONa + R'OH~жир + 3NaOH → глицерин + 3RCOONa`,
+`Углеводы — Cₙ(H₂O)ₘ: моносахариды (глюкоза, фруктоза C₆H₁₂O₆), дисахариды (сахароза C₁₂H₂₂O₁₁), полисахариды (крахмал, целлюлоза (C₆H₁₀O₅)ₙ). Глюкоза даёт реакцию серебряного зеркала, крахмал — синее окрашивание с йодом. Белки — полимеры аминокислот с пептидной связью; качественные реакции: биуретовая (фиолетовое) и ксантопротеиновая (жёлтое).##C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂ (брожение)~(C₆H₁₀O₅)ₙ + nH₂O → nC₆H₁₂O₆~−CO−NH− (пептидная связь)`,
+`Алгоритм: 1) запишите и уравняйте реакцию; 2) найдите количество вещества данных; 3) по коэффициентам определите количество искомого вещества; 4) переведите в массу или объём. При избытке-недостатке расчёт ведут по недостатку. Выход продукта — отношение практической массы к теоретической.##n = m / M~n(A) / a = n(B) / b~V = n · 22,4 л~η = m(практ) / m(теор) · 100%`
+];
+        [['phy', THP], ['che', THC]].forEach(([s, arr]) => arr.forEach((str, i) => {
+            const [t, f] = str.split('##');
+            Object.assign(topics[s][i], { theory: { ru: t, az: t, en: t }, rule: f, ruOnly: true });
+        }));
+        const THL = [
+`Фольклор — устное народное творчество, созданное народом и передаваемое из уст в уста; автор неизвестен, текст существует в вариантах. Жанры: баяты, лайла, сказки, пословицы, загадки, дастаны («Кёроглу», «Аслы и Керем»). Баяты — четверостишие из 7-сложных строк.##жанры: баяты, сказка, загадка, пословица, дастан~признаки: анонимность, вариативность, устная передача~эпос → дастан`,
+`«Китаби Деде Горгуд» — героический эпос огузов, записан в XV веке. Две рукописи: Дрезденская (12 боёв-«боев») и Ватиканская (6). Деде Горгуд — мудрец-сказитель (озан), благословляет героев. Герои: Бамси Бейрек, Салор Казан, Дели Дундар, Басат. Главные темы: родина, честь, борьба с врагом. В 2000 г. отмечали 1300-летие эпоса.##рукописи: Дрезденская (12), Ватиканская (6)~озан — сказитель, Деде Горгуд — мудрец~жанр: героический эпос`,
+`Низами Гянджеви (около 1141–1209) — великий поэт из Гянджи, писал на персидском языке. «Хамсе» («Пятерица»): «Сокровищница тайн», «Хосров и Ширин», «Лейли и Меджнун», «Семь красавиц», «Искандер-наме». Идеал Низами — справедливый правитель и гуманизм.##«Хамсе»: 5 поэм~«Лейли и Меджнун» — поэма о любви~«Семь красавиц» — рассказы о семи принцессах`,
+`Имадеддин Насими (около 1369–1417) — поэт-гуманист, последователь хуруфизма (учение Фазлуллаха Наими). Писал на азербайджанском, персидском и арабском; в центре — человек, божественный в своей сущности. Казнён в Алеппо. Основной жанр — газель.##основное направление: хуруфизм~жанр: газель~языки: азерб., перс., араб.~казнён в Алеппо`,
+`Мухаммед Физули (около 1494–1556) жил в Багдаде и Кербеле, писал на азербайджанском, персидском и арабском. Поэма «Лейли и Меджнун» (1536), «Бенг и Бада», «Хадикат ус-суада», «Письмо-жалоба» («Шикаятнаме»), диваны на трёх языках. Любовь у Физули — высшее духовное чувство; мастер газели и касыды.##«Лейли и Меджнун» (1536)~«Бенг и Бада»~«Шикаятнаме» — прозаическое письмо~жанры: газель, касыда, поэма`,
+`Ашугское творчество — искусство народных певцов-поэтов, играющих на сазе. Жанры: гошма (11 слогов), герайлы (8 слогов), дивани, теджнис, мюхаммас. Знаменитые ашуги: Гурбани, Аббас Туфарганлы, Хасте Гасым, Ашуг Алескер. В 2009 г. ашугское искусство включено ЮНЕСКО в список нематериального наследия.##гошма — 11 слогов~герайлы — 8 слогов~инструмент: саз~ЮНЕСКО: 2009`,
+`Молла Панах Вагиф (1717–1797) — основатель реалистической линии в азербайджанской поэзии, везир Карабахского ханства при Ибрагим-хане. Писал гошма, герайлы и газели на разговорном языке, воспевал красоту земной жизни. Погиб в 1797 г. от рук Ага Мухаммед-шаха Каджара.##годы: 1717–1797~жанры: гошма, герайлы, мюхаммас~реализм в поэзии, народный язык`,
+`Мирза Фатали Ахундов (1812–1878) — основатель азербайджанской реалистической драматургии и философской мысли. Шесть комедий: «Хаджи Гара», «Мсье Жордан и дервиш Мастали-шах», «Ловушка/хитрость адвоката», «Медведь, победитель разбойника» и др., повесть «Обманутые звёзды». Выступал за реформу алфавита.##комедии (1850–1855)~«Обманутые звёзды» — повесть~выступал за реформу алфавита`,
+`Сеид Азим Ширвани (1835–1888) — поэт-сатирик из Шемахи, писал на азербайджанском, персидском и русском. Критиковал невежество и религиозный фанатизм, призывал к просвещению и родному языку. Автор стихов для детей, подготовил азербайджанскую хрестоматию.##годы: 1835–1888~родом из Шемахи~тема: просвещение, сатира`,
+`Мирза Алекпер Сабир (1862–1911) — великий сатирик, сотрудничал в журнале «Молла Насреддин». Сборник «Хоп-хоп наме» (издан в 1912 г.) — самый известный. Главные темы: социальная несправедливость, невежество, лицемерие духовенства. Сатира написана простым языком, в форме герайлы и гошма.##«Хоп-хоп наме»~журнал «Молла Насреддин»~критический реализм, сатира`,
+`Джалил Мамедкулизаде (1866–1932) — основатель журнала «Молла Насреддин» (1906–1931, Тифлис, Баку, Тебриз). Пьесы и рассказы: «Мёртвые», «Книга моей матери», «Почтовый ящик», «Рассказы деревни Данабаш», «Усташ Зейнал». Основоположник критического реализма, острая сатира на невежество.##журнал: 1906–1931~«Мёртвые» — комедия~критический реализм`,
+`Гусейн Джавид (1882–1941) — главный романтик азербайджанской литературы, драматург. Драмы: «Пророк», «Сеййавуш», «Шейх Санан», «Иблис», «Топал Теймур», «Хайям», «Сиявуш». Идеи: свобода личности, духовное совершенство. Репрессирован, умер в ссылке (Сибирь).##романтизм~драмы: «Иблис», «Сеййавуш», «Шейх Санан»~умер в ссылке (1941)`,
+`Джафар Джаббарлы (1899–1934) — драматург, основатель реалистической драмы советского периода. Пьесы: «Севиль» (1928), «Алмаз», «Айдын», «Огтай Элоглу», «Яшар», «1905-й год», «Невеста огня», «Увядшие цветы». Центральная тема — освобождение женщины.##«Севиль»~«Невеста огня»~тема: женщина, борьба с пережитками`,
+`Самед Вургун (1906–1956) — народный поэт Азербайджана, драматург. Поэмы: «Комсомольская поэма», «Азербайджан», драмы: «Вагиф» (1937), «Фархад и Ширин», «Ханлар», «Человек». Мастер лирики и поэм; Вургун создаёт образ родины. Герой «Вагифа» — поэт-гуманист.##драма «Вагиф» (1937)~«Фархад и Ширин»~народный поэт`,
+`Расул Рза (1910–1981) — народный поэт, новатор: начал вводить свободный стих, философскую лирику. Сборники: «Цвета», «Эхо», «Смысл». Стремился к лаконичности формы и обобщению образа, популяризовал философскую лирику.##свободный стих~сборники: «Цвета»~новаторство формы`,
+`Мирза Ибрагимов (1911–1993) — писатель, драматург, общественный деятель. Романы: «Будущий день» («Гэлэджэк ґюн», 1948–1951), «Большая опора», «Жизнь»; повести и рассказы. Тема — судьба народа на фоне исторических событий XX века.##роман «Будущий день»~драматургия: «Махаббат», «Месть»~социально-исторические темы`,
+`Бахтияр Вахабзаде (1925–2009) — народный поэт, лидер национальной лирики. Знаменитые стихи: «Гюлистан», «Проклятье», «Мудрость», «Жить», «Мой родной язык», поэма «Мосты». Темы: родина, язык, национальная память, раздел Азербайджана (Гюлистанский договор 1813 г.).##«Гюлистан»~тема: язык, родина, память~поэма «Мосты»`,
+`Современная проза отражает жизнь независимого Азербайджана: психологизм, философская проза, исторические романы, постмодернистские поиски. Авторы: Анар («Шестой этаж пятиэтажного дома»), Эльчин («Махмуд и Марьям»), Исмаил Шихлы, Мовлуд Сулейманлы, Камал Абдулла.##Анар — «Шестой этаж пятиэтажного дома»~Эльчин — «Махмуд и Марьям»~жанры: роман, повесть, рассказ`,
+`Роды литературы: эпос (описывает события), лирика (чувства и переживания), драма (действие в диалогах). Жанры эпоса: роман, повесть, рассказ, поэма, басня. Жанры лирики: ода, элегия, послание, сонет, газель. Жанры драмы: трагедия, комедия, драма. Лироэпические жанры: баллада, поэма.##эпос — событие~лирика — чувство~драма — действие~лироэпос: поэма, баллада`,
+`Системы стихосложения: силлабическая (по числу слогов, основа азербайджанской народной поэзии: баяты — 7, герайлы — 8, гошма — 11), аруз (чередование долгих и кратких слогов, классическая восточная поэзия, например газель), силлабо-тоника, свободный стих. Рифма: смежная AABB, перекрёстная ABAB, опоясывающая ABBA. Бейт — двустишие, матла — первый бейт газели.##силлабика: слоги~аруз: долгие/краткие слоги~рифмы: AABB, ABAB, ABBA~бейт, матла`,
+`Тропы: эпитет, метафора, сравнение, олицетворение, гипербола, литота, метонимия, ирония, аллегория. Приёмы фонетики: аллитерация (повтор согласных), ассонанс (повтор гласных). Стилистические фигуры: анафора, антитеза, градация, инверсия, риторический вопрос.##метафора — скрытое сравнение~эпитет — художественное определение~аллитерация — согласные, ассонанс — гласные`,
+`Образ — художественное отражение жизни. Персонаж — действующее лицо; характер — совокупность его черт. Типичный образ воплощает общие черты группы (Хаджи Гара — скупость). Лирический герой — условный образ, чувства которого выражены в стихотворении. Способы характеристики: поступки, речь, портрет, внутренний мир, детали.##персонаж ≠ характер~лирический герой — «я» стихотворения~средства: речь, поступки, портрет`,
+`Сюжет — цепь событий. Элементы: экспозиция, завязка, развитие действия, кульминация, развязка, эпилог. Композиция — построение произведения: кольцевая, рамочная, хронологическая. Фабула — события в их естественном порядке. Конфликт — столкновение интересов, характеров, идей.##экспозиция → завязка → развитие → кульминация → развязка~композиция: рамочная, кольцевая~конфликт — основа сюжета`,
+`Литературные направления: классицизм (разум, строгие правила), сентиментализм (чувства), романтизм (исключительный герой, идеал; Джавид), реализм (типичные характеры в типичных обстоятельствах; Ахундов, Мамедкулизаде), символизм, модернизм, натурализм, постмодернизм.##романтизм: Джавид~реализм: Ахундов~сатира: Сабир~классицизм → сентиментализм → романтизм → реализм`,
+`Мировая классика: Гомер («Илиада», «Одиссея»), Данте («Божественная комедия»), Шекспир («Гамлет», «Ромео и Джульетта»), Сервантес («Дон Кихот»), Гёте («Фауст»), Пушкин («Евгений Онегин»), Толстой («Война и мир»), Достоевский («Преступление и наказание»), Гюго («Отверженные»). Вечные темы: любовь, долг, свобода, добро и зло.##Шекспир — «Гамлет»~Сервантес — «Дон Кихот»~Гёте — «Фауст»~Толстой — «Война и мир»`
+];
+        const THG = [
+`Земля — третья планета от Солнца, форма — геоид. Длина экватора около 40 000 км. Вращение вокруг оси (24 часа) даёт смену дня и ночи; обращение вокруг Солнца (365,25 суток) вместе с наклоном оси (66,5°) — смену времён года. Равноденствия: 21 марта и 23 сентября; солнцестояния: 22 июня и 22 декабря.##экватор ≈ 40 000 км~вращение: 24 ч~оборот вокруг Солнца: 365,25 суток~ось наклонена на 66,5°`,
+`Масштаб показывает, во сколько раз расстояние на карте уменьшено. Виды: численный (1:100 000), именованный (в 1 см 1 км), линейный. Чем крупнее масштаб (знаменатель меньше), тем подробнее карта. Азимут — угол от севера по часовой стрелке до направления на предмет. Изолинии: горизонтали, изотермы, изобары.##расстояние на местности = расстояние на карте × знаменатель~1:100 000 → 1 см = 1 км~азимут: от 0° до 360°`,
+`Широта — угловое расстояние от экватора (0°–90° с. ш. и ю. ш.), долгота — от Гринвичского меридиана (0°–180° з. д. и в. д.). 1° меридиана ≈ 111 км. Каждые 15° долготы — один час разницы во времени (24 часовых пояса). Азербайджан находится примерно на 38°–42° с. ш. и 44°–51° в. д., время UTC+4.##15° долготы = 1 час~1° широты ≈ 111 км~Азербайджан: 38°–42° с. ш.`,
+`Строение Земли: ядро, мантия, земная кора. Кора: континентальная (35–70 км) и океаническая (5–10 км). Литосфера — кора и верхняя часть мантии, разделена на плиты; на границах — землетрясения и вулканы. Землетрясение: очаг (гипоцентр) и эпицентр; сила измеряется по шкале Рихтера. Породы: магматические, осадочные, метаморфические.##ядро → мантия → кора~породы: магматические, осадочные, метаморфические~очаг — эпицентр`,
+`Рельеф — совокупность неровностей земной поверхности. Равнины: низменности (до 200 м), возвышенности (200–500 м), плоскогорья (выше 500 м). Горы: низкие (до 800 м), средние (800–2000 м), высокие (выше 2000 м). Эверест — 8849 м, Марианская впадина — около 11 км глубиной. Горы по происхождению: складчатые, глыбовые, вулканические.##низменность < 200 м~возвышенность 200–500 м~высокие горы > 2000 м~Эверест ≈ 8849 м`,
+`Атмосфера: азот 78 %, кислород 21 %, аргон около 1 %, углекислый газ 0,04 %. Слои: тропосфера (погода), стратосфера (озоновый слой), мезосфера, термосфера. Нормальное атмосферное давление — 760 мм рт. ст. При подъёме на 10 м давление падает на 1 мм, температура — на 6 °C на каждый километр.##N₂ 78 %, O₂ 21 %~каждые 10 м вверх: −1 мм рт. ст.~каждый 1 км вверх: −6 °C~норма: 760 мм рт. ст.`,
+`Климатические пояса: основные — экваториальный, тропический (2), умеренный (2), арктический и антарктический; переходные — субэкваториальный, субтропический, субарктический и субантарктический. Климат определяют широта, рельеф, близость океана, течения, господствующие ветры. Муссоны — сезонные ветры.##7 основных поясов~6 переходных~факторы: широта, рельеф, течения, океан`,
+`Гидросфера — все воды Земли: океан (около 96,5 %), реки, озёра, ледники, подземные воды. Пресная вода составляет около 2,5 %, основная часть в ледниках. Круговорот воды: испарение → конденсация → осадки → сток. Мировой океан занимает около 71 % поверхности Земли.##океан ≈ 71 % поверхности~пресная вода ≈ 2,5 %~круговорот: испарение → осадки → сток`,
+`Океаны: Тихий (самый большой), Атлантический, Индийский, Северный Ледовитый. Средняя солёность — 35 ‰. Течения: тёплые и холодные (Гольфстрим — тёплое). Приливы вызваны притяжением Луны и Солнца. Самое глубокое место — Марианская впадина. Каспийское море — крупнейшее озеро мира, уровень ниже уровня океана (около −28 м).##солёность 35 ‰~Тихий — самый большой~Каспий — крупнейшее озеро`,
+`Река: исток, устье, русло, бассейн, водораздел, приток. Питание: дождевое, снеговое, ледниковое, подземное. Режим: половодье, паводок, межень. Озёра: тектонические, ледниковые, вулканические, карстовые. Байкал — самое глубокое озеро (1642 м). Самые длинные реки: Нил и Амазонка.##исток → русло → устье~половодье, паводок, межень~Байкал — 1642 м`,
+`Почва — верхний плодородный слой суши; образуется под влиянием горных пород, климата, организмов, рельефа и времени. Основа плодородия — гумус. Основатель науки о почвах — В. В. Докучаев. Типы: чернозёмы (много гумуса), подзолистые, серо-бурые, красные ферраллитные. Эрозия — разрушение почвы водой и ветром.##почвообразователи: порода, климат, организмы, рельеф, время~гумус = плодородие~Докучаев`,
+`Биосфера — оболочка Земли, населённая живыми организмами (учение В. И. Вернадского). Природные зоны: арктическая пустыня, тундра, тайга, смешанные и широколиственные леса, степь, полупустыня и пустыня, саванна, влажные экваториальные леса. Зоны меняются с севера на юг (широтная зональность), в горах — высотная поясность.##тундра → тайга → степь → пустыня → саванна → экваториальные леса~широтная зональность~высотная поясность`,
+`6 материков: Евразия (самый большой, около 54 млн км²), Африка, Северная Америка, Южная Америка, Антарктида, Австралия. Частей света — 6: Европа, Азия, Африка, Америка, Австралия с Океанией, Антарктида. Самая высокая точка Африки — Килиманджаро, Южной Америки — Аконкагуа, Австралии — Косцюшко.##Евразия — самый большой~Австралия — самый маленький~Килиманджаро — Африка`,
+`Численность населения мира — более 8 млрд человек. Естественный прирост = рождаемость − смертность. Самые населённые страны: Индия и Китай. Расы: европеоидная, монголоидная, негроидная. Плотность населения — число людей на 1 км². Демографический взрыв — резкий рост населения в развивающихся странах.##прирост = рождаемость − смертность~плотность = население / площадь~3 большие расы`,
+`Урбанизация — рост городов и доли городского населения. Больше половины жителей мира живёт в городах. Агломерация — слияние городов в единую систему; мегаполис — город с населением более 10 млн; мегалополис — сросшиеся агломерации. Причины: индустриализация, миграция из сёл.##урбанизация — рост доли горожан~агломерация~мегаполис > 10 млн`,
+`Мировое хозяйство — система национальных экономик, связанных международным разделением труда. Сектора экономики: первичный (добыча, сельское хозяйство), вторичный (промышленность), третичный (услуги). Показатель развития — ВВП на душу населения. Развитые страны (США, Япония, Германия) и развивающиеся.##ВВП — стоимость товаров и услуг за год~сектора: первичный, вторичный, третичный~международное разделение труда`,
+`Промышленность: топливно-энергетическая (нефть, газ, уголь, электроэнергия), металлургия (чёрная и цветная), машиностроение, химическая, лёгкая, пищевая. Крупнейшие производители нефти: США, Россия, Саудовская Аравия. Азербайджан — страна нефтяной промышленности (Баку, «Нефтяные Камни»).##ТЭК — основа промышленности~металлургия: чёрная, цветная~машиностроение — ключевая отрасль`,
+`Сельское хозяйство: растениеводство и животноводство. Главные культуры: пшеница, рис, кукуруза, хлопчатник, чай, кофе. Интенсивное — рост урожайности технологиями, экстенсивное — расширение площадей. «Зелёная революция» — сорта и удобрения. Крупнейшие производители риса — Китай и Индия.##растениеводство + животноводство~интенсивное и экстенсивное~зелёная революция`,
+`Виды транспорта: железнодорожный, автомобильный, морской, речной, воздушный, трубопроводный. Морской — самый дешёвый для больших грузов, воздушный — самый быстрый. Азербайджан: нефтепровод Баку–Тбилиси–Джейхан, железная дорога Баку–Тбилиси–Карс, Бакинский международный морской торговый порт, Транскаспийский коридор.##БТД — нефтепровод~Баку–Тбилиси–Карс — железная дорога~морской — дешёвый, воздушный — быстрый`,
+`Рельеф Азербайджана: на севере — Большой Кавказ (Базардюзю — 4466 м, высшая точка), на юго-западе — Малый Кавказ, на юго-востоке — Талышские горы, в центре — Кура-Араксинская низменность. Нахчыванская АР — горная страна. Низменности: Самур-Дивичинская, Ленкоранская. Каспийское побережье ниже уровня океана.##Базардюзю — 4466 м~Кура-Араксинская низменность~Большой Кавказ, Малый Кавказ, Талыш`,
+`Климат Азербайджана — из 11 существующих типов здесь представлено 9. Много солнечных дней. Осадков больше всего получает Ленкорань (около 1600–1700 мм), меньше всего — Апшерон. Господствующие ветры: хазри (северный) и гилавар (южный). В горах — высотная поясность климата.##9 из 11 типов климата~Ленкорань — максимум осадков~ветры: хазри, гилавар`,
+`Реки Азербайджана принадлежат бассейну Каспия: главные — Кура (в Азербайджане около 906 км) и Аракс, также Самур, Гирдиманчай, Тертер. Крупное водохранилище — Мингечевирское. Озёра: Гёйгёль (завал), Сарысу, Хаджикабул. Основные источники питания — снеговое и дождевое.##Кура и Аракс~Мингечевирское водохранилище~Гёйгёль — завальное озеро`,
+`Природные ресурсы Азербайджана: нефть и газ (Апшерон, Каспий), железные руды (Дашкесан), алунит (Гянджа), золото (Гедабей), медь, строительные материалы, соль (Нахчыван), минеральные воды (Истису, Бадамлы). Богаты рекреационные и гидроэнергетические ресурсы.##нефть, газ — Каспий и Апшерон~железо — Дашкесан~золото — Гедабей`,
+`Население Азербайджана — около 10 млн человек. Азербайджанцы составляют около 91 %. Столица — Баку (более 2 млн). Городское население немного превышает половину. Плотность наиболее высока на Апшероне. Проблемы: миграция в Баку, неравномерное размещение. Государственный язык — азербайджанский.##население ≈ 10 млн~Баку — столица~азербайджанцы ≈ 91 %`,
+`Экономические районы Азербайджана: с 2021 года их 14, среди них Апшерон, Гянджа-Дашкесан, Шеки-Загатала, Ленкорань, Аран, Гарабах, Восточный Зангезур, Нахчыван. Специализация: Апшерон — нефть, химия, машиностроение; Гянджа-Дашкесан — металлургия; Шеки-Загатала — шёлководство, орехи; Ленкорань — чай, цитрусовые, рис.##14 районов (с 2021 г.)~Апшерон — нефть~Ленкорань — чай, цитрусовые`
+];
+        [['lit', THL], ['geo', THG]].forEach(([s, arr]) => arr.forEach((str, i) => {
+            const [t, f] = str.split('##');
+            Object.assign(topics[s][i], { theory: { ru: t, az: t, en: t }, rule: f, ruOnly: true });
+        }));
+        Object.keys(REAL).forEach(id => {
+            const r = REAL[id], s = id.split('_')[0], n = +id.split('_')[1];
+            const tp = topics[s].find(x => x.id === id);
+            tp.title = {}; ['ru','az','en'].forEach(l => tp.title[l] = `${n}. ${emojis[n-1]} ${r.t[l]}`);
+            tp.theory = r.th; tp.rule = r.rule.split('|').join('~'); tp.real = r.qs;
+        });
+
+        window.onload = () => {
+            if(!prof) { prof = { name: "Tələbə", group: "Выпускной (9-11 класс)", subjects: ["mat","rus","lit","whi","aze","phy","che"] }; localStorage.setItem('dim_p', JSON.stringify(prof)); }
+            applyTheme(); setLang(lang); boot();
+        };
+
+        function applyTheme() {
+            document.documentElement.classList.toggle('light', !dark);
+            document.getElementById('th-icon').innerText = dark ? '☀️' : '🌙';
+        }
+        function toggleTheme(ev) {
+            const go = () => { dark = !dark; localStorage.setItem('dim_t', dark ? 'dark' : 'light'); applyTheme(); };
+            const root = document.documentElement;
+            if(!document.startViewTransition || RM || !ev){ go(); return; }
+            const r = ev.currentTarget.getBoundingClientRect(), x = r.left + r.width/2, y = r.top + r.height/2;
+            const R = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+            root.classList.add('notrans');
+            const vt = document.startViewTransition(go);
+            vt.ready.then(() => root.animate({ clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${R}px at ${x}px ${y}px)`] }, { duration: 750, easing: 'cubic-bezier(.16,1,.3,1)', pseudoElement: '::view-transition-new(root)' }));
+            vt.finished.finally(() => root.classList.remove('notrans'));
+        }
+        
+        function setLang(l) {
+            lang = l; localStorage.setItem('dim_l', l);
+            ['az','ru','en'].forEach(x => { const btn = document.getElementById('l-'+x); if(btn) btn.className = `lang-btn ${x===l?'active':''}`; });
+            document.getElementById('l-prof').innerText = i18n[l].prof;
+            document.getElementById('m-title').innerText = i18n[l].mTitle;
+            document.getElementById('m-sub').innerText = i18n[l].mSub;
+            document.getElementById('l-n').innerText = i18n[l].lName;
+            document.getElementById('l-g').innerText = i18n[l].lGroup;
+            document.getElementById('l-s').innerText = i18n[l].lSubs;
+            document.getElementById('b-save').innerText = i18n[l].bSave;
+            document.getElementById('l-ch').innerText = i18n[l].lChoice;
+            document.getElementById('l-th').innerText = i18n[l].lTh;
+            document.getElementById('l-th-d').innerText = i18n[l].lThD;
+            document.getElementById('l-ts').innerText = i18n[l].lTs;
+            document.getElementById('l-ts-d').innerText = i18n[l].lTsD;
+            render(document.body.classList.contains('ready'));
+        }
+
+        function updateUI() {
+            if(!prof) return;
+            document.getElementById('u-name').innerText = prof.name;
+            document.getElementById('u-group').innerText = prof.group;
+            document.getElementById('avatar').innerText = (prof.name[0] || 'T').toUpperCase();
+        }
+
+        function openProfile() {
+            updateUI();
+            openModal('m-profile');
+            document.getElementById('i-name').value = prof.name;
+            document.getElementById('i-group').value = prof.group;
+            const c = document.getElementById('sub-boxes'); c.innerHTML = '';
+            Object.keys(subs).forEach(k => {
+                const checked = prof.subjects.includes(k) ? 'checked' : '';
+                c.innerHTML += `<label style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;cursor:pointer;"><input type="checkbox" value="${k}" ${checked}> ${subs[k].icon} ${subs[k].name[lang]}</label>`;
+            });
+        }
+
+        function saveProf(e) {
+            e.preventDefault();
+            const subsArr = [];
+            document.querySelectorAll('#sub-boxes input:checked').forEach(i => subsArr.push(i.value));
+            if(!subsArr.length) return alert("Выберите предмет!");
+            prof = { name: document.getElementById('i-name').value.trim(), group: document.getElementById('i-group').value, subjects: subsArr };
+            localStorage.setItem('dim_p', JSON.stringify(prof));
+            closeModal('m-profile');
+            updateUI(); if(!subsArr.includes(activeTab)) activeTab = subsArr[0];
+            render();
+        }
+
+        /* ===== helpers ===== */
+        const $ = id => document.getElementById(id);
+        const plain = t => t.replace(/^(\d+\.)\s+\S+\s/, '$1 ');
+        const FINE = matchMedia('(hover:hover) and (pointer:fine)').matches && !RM;
+        L3.ruonly = { ru: '', az: 'Bu mövzunun ətraflı nəzəriyyəsi hələlik rus dilindədir.', en: 'The detailed theory for this topic is currently in Russian only.' };
+        L3.empty = { ru: "Здесь пока пусто", az: "Burada hələ heç nə yoxdur", en: "Nothing here yet" };
+
+        function tween(el, from, to, d) {
+            if(!el) return;
+            if(RM || from === to){ el.textContent = to; return; }
+            const t0 = performance.now(), k = el._k = (el._k || 0) + 1;
+            (function f(t){ if(el._k !== k) return; const p = Math.min(1, (t - t0) / d); el.textContent = Math.round(from + (to - from) * (1 - Math.pow(1 - p, 3))); if(p < 1) requestAnimationFrame(f); })(t0);
+        }
+        const countTo = (el, n, d) => tween(el, 0, n, d);
+
+        const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .1, rootMargin: '0px 0px -5% 0px' });
+
+        /* ===== modals ===== */
+        function openModal(id) { $(id).classList.remove('hidden', 'closing'); document.body.classList.add('lock'); }
+        function closeModal(id) {
+            const m = $(id); if(m.classList.contains('hidden') || m.classList.contains('closing')) return;
+            m.classList.add('closing');
+            setTimeout(() => { m.classList.add('hidden'); m.classList.remove('closing'); if(!document.querySelector('.modal-overlay:not(.hidden)')) document.body.classList.remove('lock'); }, RM ? 0 : 300);
+        }
+        document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('pointerdown', e => { if(e.target === m) closeModal(m.id); }));
+        document.querySelectorAll('.choice-btn').forEach(b => { b.tabIndex = 0; b.setAttribute('role', 'button'); });
+        document.addEventListener('keydown', e => {
+            if(e.key === 'Escape') document.querySelectorAll('.modal-overlay:not(.hidden)').forEach(m => closeModal(m.id));
+            if((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('.topic-row,.mobbin-opt,.tab-chip,.choice-btn')){ e.preventDefault(); e.target.click(); }
+        });
+
+        /* ===== smooth scroll (inertia) + scroll effects ===== */
+        let sTgt = scrollY, sCur = scrollY, sRaf = 0, lastY = scrollY, fxT = false;
+        function jump(y) { sTgt = sCur = y; cancelAnimationFrame(sRaf); sRaf = 0; scrollTo({ top: y, behavior: 'instant' }); }
+        function sloop() {
+            const d = sTgt - sCur; sCur += d * .11;
+            if(Math.abs(sTgt - sCur) < .4) sCur = sTgt;
+            scrollTo(0, sCur);
+            const m = document.querySelector('.marquee'); if(m) m.style.transform = `skewX(${Math.max(-7, Math.min(7, -d * .035)).toFixed(2)}deg)`;
+            if(sCur === sTgt){ sRaf = 0; if(m) m.style.transform = ''; } else sRaf = requestAnimationFrame(sloop);
+        }
+        if(FINE) {
+            addEventListener('wheel', e => {
+                if(e.ctrlKey || document.body.classList.contains('lock') || e.target.closest('.tabs-wrapper,#sub-boxes')) return;
+                if(Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+                e.preventDefault();
+                if(!sRaf) sTgt = sCur = scrollY;
+                const dy = e.deltaMode === 1 ? e.deltaY * 34 : e.deltaMode === 2 ? e.deltaY * innerHeight : e.deltaY;
+                sTgt = Math.max(0, Math.min(sTgt + dy, document.documentElement.scrollHeight - innerHeight));
+                if(!sRaf) sRaf = requestAnimationFrame(sloop);
+            }, { passive: false });
+        }
+        addEventListener('scroll', () => {
+            if(!sRaf){ sTgt = sCur = scrollY; }
+            if(fxT) return; fxT = true;
+            requestAnimationFrame(() => {
+                fxT = false; const y = scrollY, nv = document.querySelector('.top-nav');
+                if(y > lastY + 4 && y > 140) nv.classList.add('hide'); else if(y < lastY - 4 || y < 80) nv.classList.remove('hide');
+                lastY = y;
+                const h = document.querySelector('.hero-banner'); if(h && !RM) h.style.translate = y < 700 ? `0 ${(y * .1).toFixed(1)}px` : '';
+            });
+        }, { passive: true });
+
+        /* ===== page transition + boot ===== */
+        let busy = false;
+        function nav(fn) {
+            if(RM){ fn(); jump(0); return; }
+            if(busy) return; busy = true;
+            const c = $('curtain'); c.className = 'in';
+            setTimeout(() => { fn(); jump(0); requestAnimationFrame(() => { c.className = 'out'; setTimeout(() => { c.className = ''; busy = false; }, 650); }); }, 500);
+        }
+        function boot() {
+            const pre = $('pre'); let seen = false;
+            try { seen = sessionStorage.getItem('dim_seen'); } catch(e) {}
+            if(RM || seen){ pre.remove(); requestAnimationFrame(() => document.body.classList.add('ready')); return; }
+            try { sessionStorage.setItem('dim_seen', '1'); } catch(e) {}
+            tween($('pre-n'), 0, 100, 1000);
+            setTimeout(() => { pre.classList.add('out'); setTimeout(() => document.body.classList.add('ready'), 350); setTimeout(() => pre.remove(), 1100); }, 1150);
+        }
+
+        /* ===== cursor + magnet (rAF-throttled, sleeps when idle) ===== */
+        if(FINE) {
+            const cur = $('cur'), HOT = 'button,.topic-row,.mobbin-opt,.tab-chip,.choice-btn,label,input,select', MAG = '.btn-icon,.btn-primary,.choice-btn';
+            let x = -100, y = -100, cx = -100, cy = -100, tgt = null, mag = null, run = false, pend = false;
+            const frame = () => { cx += (x - cx) * .22; cy += (y - cy) * .22; cur.style.transform = `translate3d(${cx}px,${cy}px,0)`; if(Math.abs(x - cx) > .1 || Math.abs(y - cy) > .1) requestAnimationFrame(frame); else run = false; };
+            document.addEventListener('pointermove', e => {
+                x = e.clientX; y = e.clientY; tgt = e.target;
+                if(!run){ run = true; requestAnimationFrame(frame); }
+                if(pend) return; pend = true;
+                requestAnimationFrame(() => {
+                    pend = false; if(!tgt || !tgt.closest) return;
+                    cur.classList.toggle('big', !!tgt.closest(HOT));
+                    const m = tgt.closest(MAG);
+                    if(mag && mag !== m){ mag.style.setProperty('--mx', '0px'); mag.style.setProperty('--my', '0px'); }
+                    mag = m;
+                    if(m){ const r = m.getBoundingClientRect(), ox = parseFloat(m.style.getPropertyValue('--mx')) || 0, oy = parseFloat(m.style.getPropertyValue('--my')) || 0;
+                        m.style.setProperty('--mx', (x - (r.left - ox) - r.width / 2) * .22 + 'px'); m.style.setProperty('--my', (y - (r.top - oy) - r.height / 2) * .35 + 'px'); }
+                });
+            }, { passive: true });
+            document.addEventListener('pointerdown', () => cur.classList.add('down'));
+            document.addEventListener('pointerup', () => cur.classList.remove('down'));
+        }
+
+        function afterRender(st) {
+            const app = $('app'); st = st || RM;
+            app.querySelectorAll('.sp').forEach(el => {
+                if(el.dataset.s) return; el.dataset.s = 1;
+                el.innerHTML = el.textContent.trim().split(/\s+/).map((w, i) => `<span class="w"><span style="transition-delay:${i * .06}s">${w}</span></span>`).join(' ');
+            });
+            app.querySelectorAll('.rv,.sp').forEach(el => { if(st){ el.classList.add('in', 'nr'); } else io.observe(el); });
+        }
+
+        /* ===== quiz engine ===== */
+        let Q = [], ans = [], qSrc = null, qN = 10;
+        function shuffle(a) { a = a.slice(); for(let i = a.length - 1; i > 0; i--){ const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; }
+        function makeQs(tp, n) {
+            if(tp && tp.real) return shuffle(tp.real).map(([q, o, c, e]) => ({ q, e, opts: shuffle(o.map((t, i) => ({ text: t, correct: i === c }))) }));
+            return Array.from({ length: n }, (_, i) => ({
+                demo: true, e: null,
+                q: tp ? tp.quizzes[i % tp.quizzes.length].q : `DİM`,
+                opts: shuffle([1, 2, 3, 4].map((j, k) => ({ text: `Variant ${j}`, correct: k === 0 })))
+            }));
+        }
+        const qText = q => { const v = typeof q.q === 'object' ? q.q[lang] : q.q; return q.demo ? v.replace(/^\d+\.\s*/, '') : v; };
+        function startQuiz() { Q = makeQs(qSrc ? findTopic() : null, qN); ans = Q.map(() => null); }
+        function paint(qi, oi) {
+            const card = $('q' + qi); if(!card) return;
+            card.querySelectorAll('.mobbin-opt').forEach((el, i) => {
+                el.classList.add('locked'); el.removeAttribute('tabindex');
+                if(Q[qi].opts[i].correct) el.classList.add('correct'); else if(i === oi) el.classList.add('wrong');
+            });
+            card.querySelector('.exp').classList.add('open');
+        }
+        function pick(qi, oi) { if(ans[qi] !== null) return; ans[qi] = oi; paint(qi, oi); score(); }
+        function score() {
+            const done = ans.filter(a => a !== null).length, ok = ans.filter((a, i) => a !== null && Q[i].opts[a].correct).length;
+            const b = $('qb'); if(b) b.style.width = (done / Q.length * 100) + '%';
+            const r = $('res'); if(!r || done < Q.length) return;
+            r.classList.add('show'); tween($('rn'), 0, ok, 1000); $('rt').textContent = ' / ' + Q.length;
+            setTimeout(() => r.scrollIntoView({ behavior: 'smooth', block: 'center' }), 600);
+        }
+        function retry() { nav(() => { startQuiz(); render(); }); }
+
+        /* ===== navigation ===== */
+        function openChoice(id) { selId = id; $('c-title').innerText = findTopic().title[lang]; openModal('m-choice'); }
+        function goTheory() { closeModal('m-choice'); nav(() => { view = 'theory'; render(); }); }
+        function goTest() { closeModal('m-choice'); nav(() => { view = 'test'; qSrc = selId; qN = 10; startQuiz(); render(); }); }
+        function goSub() { nav(() => { view = 'sub_test'; qSrc = null; qN = 20; startQuiz(); render(); }); }
+        function goHome() { nav(() => { view = 'roadmap'; render(); }); }
+        function findTopic() {
+            let res = null;
+            Object.keys(topics).forEach(s => { const t = topics[s].find(x => x.id === selId); if(t) res = t; });
+            return res;
+        }
+
+        /* ===== progress / list (updated in place, no full re-render) ===== */
+        function stats() {
+            const sl = prof ? prof.subjects : Object.keys(subs); let total = 0, done = 0;
+            sl.forEach(s => topics[s].forEach(x => { total++; if(prog[x.id]) done++; }));
+            return { total, done, pct: total ? Math.round(done / total * 100) : 0 };
+        }
+        let shown = { done: 0, pct: 0 };
+        function updateProgress() {
+            const { total, done, pct } = stats();
+            const f = document.querySelector('.progress-fill'); if(f) f.style.width = pct + '%';
+            tween($('p-done'), shown.done, done, 700); tween($('p-pct'), shown.pct, pct, 700);
+            const tt = $('p-total'); if(tt) tt.textContent = total;
+            shown = { done, pct };
+        }
+        function toggleProgress(id) {
+            prog[id] = !prog[id]; localStorage.setItem('dim_prog', JSON.stringify(prog));
+            const row = document.querySelector(`.topic-row[data-id="${id}"]`);
+            if(row){ row.classList.toggle('completed', !!prog[id]); if(filter === 'done' && !prog[id]){ row.classList.add('leaving'); setTimeout(() => renderList(), 380); } }
+            updateProgress();
+        }
+        function listHTML() {
+            const rows = topics[activeTab].map((tp, idx) => {
+                const isDone = !!prog[tp.id];
+                if(filter === 'min' && !tp.min) return '';
+                if(filter === 'done' && !isDone) return '';
+                return `
+                    <div class="topic-row ${isDone ? 'completed' : ''} rv" data-id="${tp.id}" tabindex="0" role="button" style="--d:${Math.min(idx, 8) * .05}s" onclick="openChoice('${tp.id}')">
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <input type="checkbox" ${isDone ? 'checked' : ''} onclick="event.stopPropagation(); toggleProgress('${tp.id}');" style="width:20px;height:20px;accent-color:var(--accent);">
+                            <div>
+                                ${tp.min ? '<span class="topic-badge">★ MİNİMUM</span><br>' : ''}
+                                <h4 style="font-size:13px;font-weight:700;">${tp.title[lang]}</h4>
+                            </div>
+                        </div>
+                        <span style="color:var(--text-tertiary);font-size:11px;font-weight:600;white-space:nowrap;">${L3.open[lang]} <i class="go" style="font-style:normal">→</i></span>
+                    </div>`;
+            }).join('');
+            return rows || `<p class="note rv" style="padding:28px 6px;text-align:center">${L3.empty[lang]}</p>`;
+        }
+        function renderList(st) {
+            const l = $('list'); if(!l) return;
+            l.innerHTML = listHTML();
+            l.querySelectorAll('.rv').forEach(el => { if(st || RM) el.classList.add('in', 'nr'); else io.observe(el); });
+        }
+        function setTab(s) {
+            activeTab = s;
+            const wrap = $('tabs');
+            wrap.querySelectorAll('.tab-chip').forEach(c => { const on = c.dataset.s === s; c.classList.toggle('active', on); if(on) wrap.scrollTo({ left: c.offsetLeft - wrap.clientWidth / 2 + c.clientWidth / 2, behavior: RM ? 'auto' : 'smooth' }); });
+            renderList();
+        }
+        function setFilter(f) { filter = f; ['all', 'min', 'done'].forEach(x => $('f-' + x).classList.toggle('active', x === f)); renderList(); }
+
+        function show(html, st) { const app = $('app'); app.innerHTML = html; afterRender(st); }
+
+        function render(st) {
+            const t = i18n[lang];
+            updateUI();
+            $('qbar').classList.toggle('hidden', !(view === 'test' || view === 'sub_test'));
+            const back = `<button onclick="goHome()" class="btn-icon" style="margin-bottom:18px;">${t.back}</button>`;
+
+            if(view === 'theory' && selId) {
+                const top = findTopic(), real = !!top.real;
+                show(`${back}
+                    <div class="artifact-card">
+                        <h2 class="page-title sp">${plain(top.title[lang])}</h2>
+                        <div style="height:14px"></div>
+                        <div class="quiz-card rv"><h4 style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:8px;">${t.secTh}</h4>
+                            <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;user-select:text;">${top.theory[lang]}</p>${top.ruOnly && lang !== 'ru' ? `<p class="note" style="margin-top:10px">${L3.ruonly[lang]}</p>` : ''}</div>
+                        <div class="quiz-card rv" style="--d:.08s"><h4 style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:8px;">${t.secRl}</h4>
+                            ${top.rule ? top.rule.split('~').map(x => `<code class="formula">${x}</code>`).join('') : `<p class="note">${L3.na[lang]}</p>`}</div>
+                        <button onclick="goTest()" class="btn-primary rv" style="margin-top:12px;--d:.16s">${t.toQuiz}</button>
+                    </div>`, st);
+                return;
+            }
+
+            if((view === 'test' && selId) || view === 'sub_test') {
+                const isSub = view === 'sub_test', top = isSub ? null : findTopic();
+                if(!Q.length) startQuiz();
+                show(`${back}
+                    <div class="artifact-card">
+                        <h2 class="page-title sp">${isSub ? `${t.stest} (${subs[activeTab].name[lang]})` : plain(top.title[lang])}</h2>
+                        <p style="font-size:12px;color:var(--text-tertiary);margin-bottom:18px;">${isSub ? '' : t.ttest}</p>
+                        ${Q.map((q, qi) => `
+                            <div class="quiz-card rv" id="q${qi}" style="--d:${Math.min(qi, 3) * .06}s">
+                                <div class="q-text">${qi + 1}. ${qText(q)}</div>
+                                ${q.opts.map((o, oi) => `<div class="mobbin-opt" tabindex="0" role="button" onclick="pick(${qi},${oi})"><span class="k">${'ABCD'[oi]}</span><span>${o.text}</span></div>`).join('')}
+                                <div class="exp"><div><div class="exp-in"><b>${L3.exp[lang]}:</b> ${q.e || L3.demo[lang]}</div></div></div>
+                            </div>`).join('')}
+                        <div class="quiz-card res" id="res"><div class="note">${L3.res[lang]}</div>
+                            <div class="res-n"><span id="rn">0</span><small id="rt"></small></div>
+                            <button class="btn-primary" onclick="retry()">${L3.again[lang]}</button></div>
+                    </div>`, st);
+                ans.forEach((a, i) => { if(a !== null) paint(i, a); });
+                score();
+                return;
+            }
+
+            const subsList = prof ? prof.subjects : Object.keys(subs);
+            if(!subsList.includes(activeTab)) activeTab = subsList[0];
+            const { total, done, pct } = stats();
+            shown = st ? { done, pct } : { done: 0, pct: 0 };
+            const names = subsList.map(s => `<span>${subs[s].icon} ${subs[s].name[lang]}</span>`).join('');
+
+            show(`
+                <div class="hero-banner rv">
+                    <h1 class="hero-title sp">${t.title}</h1>
+                    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">${t.sub}</p>
+                    <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:800;margin-bottom:6px;">
+                        <span>${L3.prog[lang]}</span><span><span id="p-done">${shown.done}</span> / <span id="p-total">${total}</span> (<span id="p-pct">${shown.pct}</span>%)</span>
+                    </div>
+                    <div class="progress-track"><div class="progress-fill" style="width:${shown.pct}%"></div></div>
+                </div>
+
+                <div class="marquee"><div class="mq">${names}${names}${names}${names}</div></div>
+
+                <div class="tabs-wrapper" id="tabs">
+                    ${subsList.map(s => `<div data-s="${s}" tabindex="0" role="button" onclick="setTab('${s}')" class="tab-chip ${activeTab === s ? 'active' : ''}"><span>${subs[s].icon}</span><span>${subs[s].name[lang]}</span></div>`).join('')}
+                </div>
+
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:8px;">
+                    <div style="display:flex;gap:6px;">
+                        <button id="f-all" onclick="setFilter('all')" class="btn-icon ${filter === 'all' ? 'active' : ''}">${t.all}</button>
+                        <button id="f-min" onclick="setFilter('min')" class="btn-icon ${filter === 'min' ? 'active' : ''}">${t.min}</button>
+                        <button id="f-done" onclick="setFilter('done')" class="btn-icon ${filter === 'done' ? 'active' : ''}">${t.done}</button>
+                    </div>
+                    <button onclick="goSub()" class="btn-icon" style="background:var(--accent);color:#fff;border:none;box-shadow:0 6px 18px var(--accent-glow);">${t.stest}</button>
+                </div>
+
+                <div id="list"></div>`, st);
+            renderList(st);
+            if(!st) requestAnimationFrame(() => requestAnimationFrame(updateProgress));
+        }
+    </script>
+</body>
+</html>
